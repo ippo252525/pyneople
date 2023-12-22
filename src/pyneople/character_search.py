@@ -25,12 +25,19 @@ class CharacterSearch():
         arg_server_name = SERVER_NAME_2_ID[arg_server_name]
         
         url = f"https://api.neople.co.kr/df/servers/{arg_server_name}/characters?characterName={urllib.parse.quote(arg_character_name)}&limit=1&apikey={self.__api_key}"
-        data = get_request(url)
-        data = data['rows'][0]
+        return get_request(url)
+    
+    def parse_data(self, arg_data):
+        """
+        가져온 데이터를 정리해서 하위 attribute에 저장
+            Args :
+                arg_data(dict) : Neople Open API 를 통해 받은 data
+        """
+        arg_data = arg_data['rows'][0]
 
-        self.server_id = data['serverId']
-        self.character_name = data['characterName']
-        self.character_id = data['characterId']
-        self.job_name = data['jobName'] 
-        self.job_grow_name = data['jobGrowName']
-        self.level = data['level']
+        self.server_id = arg_data.get('serverId')
+        self.character_name = arg_data.get('characterName')
+        self.character_id = arg_data.get('characterId')
+        self.job_name = arg_data.get('jobName')
+        self.job_grow_name = arg_data.get('jobGrowName')
+        self.level = arg_data.get('level')

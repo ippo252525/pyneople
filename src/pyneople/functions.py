@@ -27,10 +27,10 @@ def get_request(arg_url):
     """
 
     # request.get 실패 할 경우 에러 발생시킴
-    try:
-        data = requests.get(arg_url, timeout = SETTINGS['request_time_out'])
-    except:
-        raise Exception("해당 url주소는 사용할 수 없습니다")    
+    #try:
+    data = requests.get(arg_url, timeout = SETTINGS['request_time_out'])
+    # except:
+    #    raise Exception("해당 url주소는 사용할 수 없습니다")    
     
     # 성공한다면 api 규칙에 따라 지정한 시간을 멈춘다
     time.sleep(SETTINGS['request_time_sleep'])
@@ -38,11 +38,11 @@ def get_request(arg_url):
     # 데이터 저장
     data = json.loads(data.text)
 
-    # request.get은 성공 했으나 받아온 데이터가 Open API 에서 error로 규정된 경우 에러 발생시킴
-    if list(data.keys())[0] == 'error':  
-        raise Exception(f"apikey혹은 url에 문제가 있습니다. 코드를 확인해주세요. error : {data}")
-    else:    
-        return data
+    # # request.get은 성공 했으나 받아온 데이터가 Open API 에서 error로 규정된 경우 에러 발생시킴
+    # if list(data.keys())[0] == 'error':  
+    #     raise Exception(f"apikey혹은 url에 문제가 있습니다. 코드를 확인해주세요. error : {data}")
+    # else:    
+    return data
     
 
 def _next(arg_dict, arg_list):

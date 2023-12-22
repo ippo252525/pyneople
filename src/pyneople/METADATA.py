@@ -1,7 +1,7 @@
 # 초기 설정값
 SETTINGS = {
     "request_time_out" : 5,
-    "request_time_sleep" : 0.125
+    "request_time_sleep" : 0.0015
 }
 
 # 서버 NAME 이 key ID 가 value
@@ -16,11 +16,11 @@ SERVER_NAME_2_ID = {
     "시로코" : "siroco"
     }
 
-# 서버 ID 문자열 길이의 최대값
-SERVERLENGTH = max(list(map(lambda x : len(x), list(SERVER_NAME_2_ID.values()))))
-
 # 서버 ID 가 key NAME 이 value
 SERVER_ID_2_NAME = {v : k for k , v in SERVER_NAME_2_ID.items()}
+
+# 서버 ID 문자열 길이의 최대값
+SERVERLENGTH = max(list(map(lambda x : len(x), list(SERVER_NAME_2_ID.values()))))
 
 # 직업명
 JOBCLASS = {
