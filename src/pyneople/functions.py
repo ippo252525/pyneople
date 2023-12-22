@@ -6,11 +6,11 @@ from .METADATA import SETTINGS
 
 __all__ = ['change_settings', 'get_request', 'jobname_equalize', 'get_job_info', 'system_maintenance']
 
-def change_settings(arg_time_out : int, arg_time_sleep : float):
+def change_settings(arg_time_out : int = 5, arg_time_sleep : float = 0.0015):
     """
     request에 필요한 설정 값을 바꾸는 함수
 
-    초기 설정 값은 각각 5초, 0.125초
+    초기 설정 값은 각각 5초, 0.0015초
         Args :
             arg_time_out(int) : 해당 시간동안 응답이 없으면 에러 처리한다
             
