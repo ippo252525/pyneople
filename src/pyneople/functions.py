@@ -20,32 +20,24 @@ def change_settings(arg_time_out : int = 5, arg_time_sleep : float = 0.0015):
     SETTINGS['request_time_out'] = arg_time_out
     SETTINGS['request_time_sleep'] = arg_time_sleep
 
-def get_request(arg_url):
+def get_request(arg_url : str):
     """
     url 입력시 data 가져오는 함수
-    arg_url : 원하는 url 주소
+        Args :
+            arg_url(str) : 원하는 url 주소
     """
-
-    # request.get 실패 할 경우 에러 발생시킴
-    #try:
+    start_time = time.time()
     data = requests.get(arg_url, timeout = SETTINGS['request_time_out'])
-    # except:
-    #    raise Exception("해당 url주소는 사용할 수 없습니다")    
-    
-    # 성공한다면 api 규칙에 따라 지정한 시간을 멈춘다
-    time.sleep(SETTINGS['request_time_sleep'])
-
-    # 데이터 저장
     data = json.loads(data.text)
-
-    # # request.get은 성공 했으나 받아온 데이터가 Open API 에서 error로 규정된 경우 에러 발생시킴
-    # if list(data.keys())[0] == 'error':  
-    #     raise Exception(f"apikey혹은 url에 문제가 있습니다. 코드를 확인해주세요. error : {data}")
-    # else:    
+    # Neople Open API 상에서 규정된 에러가 발생할 경우 에러를 발생시킨다.
+    if data.get("error"):
+        raise Exception(data.get("error"))
+    elapsed_time = time.time() - start_time
+    if elapsed_time < SETTINGS['request_time_sleep']:
+        time.sleep(SETTINGS['request_time_sleep'] - elapsed_time)
     return data
-    
 
-def _next(arg_dict, arg_list):
+def _next(arg_dict : dict, arg_list : list):
     """
     get_job_info 함수를 위해 쓰이는 함수
     """
@@ -57,11 +49,12 @@ def _next(arg_dict, arg_list):
         return arg_dict["jobGrowName"]
 
 
-def get_job_info(arg_api_key):
+def get_job_info(arg_api_key : str):
     """
     직업 정보를 받아오는 함수
     전직명(각성명)을 1차 전직명으로 통일시키는 jobname_equalize 함수에 매개변수로 사용되는 객체를 반환함
-    arg_api_key : Neople Open API key
+        Args :
+            arg_api_key(str) : Neople Open API key
     """
     data = get_request(f"https://api.neople.co.kr/df/jobs?apikey={arg_api_key}")
     job_list = []
@@ -118,11 +111,13 @@ def system_maintenance(arg_api_key: str):
     else:
         return False
 
-def explain_enchant(arg_enchant_dict):
+def explain_enchant(arg_enchant_dict : dict):
     """
     마법부여 정보를 정리해주는 함수
+        Args :
+            arg_enchant_dict(dict) : 마법부여 정보 dict
     """
-    if arg_enchant_dict == {}:
+    if arg_enchant_dict == {} or arg_enchant_dict == None:
         return None
     output = ""
     if "status" in arg_enchant_dict.keys():
@@ -194,19 +189,19 @@ def value_flatten(arg_object):
     arg_object = flatten(arg_object)
     return arg_object
 
-def one_slot(arg_equipment_list : list, arg_slot_name : str):
-    """
-    해당 부위의 정보만 반환하는 함수
-        Args:
-            arg_equipment_list(list) : 캐릭터 장비 데이터(dict)로 이루어진 list
+# def one_slot(arg_equipment_list : list, arg_slot_name : str):
+#     """
+#     해당 부위의 정보만 반환하는 함수
+#         Args:
+#             arg_equipment_list(list) : 캐릭터 장비 데이터(dict)로 이루어진 list
             
-            arg_slot_name(str) : 해당 장비의 이름
-        Returns:
-            해당 장비의 dict            
-    """
-    if arg_equipment_list == []:
-        return None
-    for equipment in arg_equipment_list:
-        if equipment['slotId'] == arg_slot_name :
-            return equipment
-    return None
+#             arg_slot_name(str) : 해당 장비의 이름
+#         Returns:
+#             해당 장비의 dict            
+#     """
+#     if arg_equipment_list == []:
+#         return None
+#     for equipment in arg_equipment_list:
+#         if equipment['slotId'] == arg_slot_name :
+#             return equipment
+#     return None

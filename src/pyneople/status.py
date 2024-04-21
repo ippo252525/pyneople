@@ -1,4 +1,5 @@
 from .functions import get_request
+from .METADATA import STATUS_NAME
 
 class Status():
     def __init__(self, arg_api_key : str):
@@ -8,18 +9,10 @@ class Status():
                 arg_api_key(str) : Neople Open API key
         """
         self.__api_key = arg_api_key
-        self.adventure_name = None
-        self.guild_name = None
-        self.adventure_level = None
-        self.strength = None
-        self.intellect = None
-        self.health = None
-        self.mentality = None
-        self.fame = None
 
     def get_data(self, arg_server_id : str, arg_character_id : str):
         """
-        캐릭터의 모험단명부터 명성등 정보를 반환한다
+        캐릭터의 모험단명부터 명성 등 정보를 반환한다
             Args:
                 arg_server_id(str) :  서버 ID
                 
@@ -27,46 +20,33 @@ class Status():
         """
 
         url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/status?apikey={self.__api_key}'
-        data = get_request(url)
-        try:
-            self.adventure_name = data['adventureName']
-        except:
-            pass
-        try:
-            self.guild_name = data['guildName']    
-        except:
-            pass
-        try:
-            self.adventure_level = data['buff'][0]['level']
-        except:
-            pass   
-        try:             
-            status_dict = dict()
-            for item in data['status']:
-                status_dict[item['name']] = item['value']                    
-        except:
-            pass        
-        try:
-            self.strength = status_dict["힘"]
-        except:
-            pass        
-        try:
-            self.intellect = status_dict["지능"]
-        except:
-            pass
-        try:
-            self.health = status_dict["체력"]
-        except:
-            pass                
-        try:
-            self.mentality = status_dict["정신력"]
-        except:
-            pass        
-        try:
-            self.fame = status_dict["모험가 명성"]
-        except:
-            pass        
+        return get_request(url)
         
+    def parse_data(self, arg_data, variable_list = STATUS_NAME.keys()):
+        """
+        가져온 데이터를 정리해서 하위 attribute에 저장
+            Args :
+                arg_data(dict) : Neople Open API 를 통해 받은 data
+        """
+        
+        if arg_data.get('buff'):
+            for buff in arg_data['buff']:
+                if buff.get('name') == '모험단 버프':
+                    arg_data['adventure_level'] = buff.get('level')
+                elif buff.get('name') == '무제한 길드능력치':
+                    arg_data['unlimited_guild_abilities'] = True
+                elif buff.get('name') == '기간제 길드능력치':
+                    arg_data['limited_guild_abilities'] = True
+                else:
+                    pass
+
+        if arg_data.get('status'):
+            for item in arg_data['status']:
+                arg_data[item['name']] = item['value']   
+
+        for attribute_name in variable_list:
+            setattr(self, attribute_name, arg_data.get(STATUS_NAME[attribute_name]))
+
         
         
         

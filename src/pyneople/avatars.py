@@ -1,5 +1,5 @@
-from .functions import get_request, one_slot
-from .METADATA import AVATAR_LIST
+from .functions import get_request
+from .METADATA import AVATAR_LIST, PLATINUM_AVATAR_LIST
 
 class Avatar():
     def __init__(self):
@@ -8,26 +8,20 @@ class Avatar():
         self.option_ability = None
         self.emblem_1 = None
         self.emblem_2 = None
-        self.emblem_3 = None        
+        
     def get_avatar_data(self, arg_avatar_dict):
-        
-        try:
-            self.item_name = arg_avatar_dict["itemName"]
-            self.item_rarity = arg_avatar_dict["itemRarity"]
-        except:
-            pass    
-        
-        try:
-            self.option_ability = arg_avatar_dict["optionAbility"]
-        except:
-            pass
-        
-        try:    
-            for index, emblem in enumerate(arg_avatar_dict['emblems']):
-                exec(f"self.emblem_{index+1} = '{emblem['itemName']}'")
-        except:
-            pass        
+        self.item_name = arg_avatar_dict.get("itemName")
+        self.item_rarity = arg_avatar_dict.get("itemRarity")
+        self.option_ability = arg_avatar_dict.get("optionAbility")
+        for i, emblem in enumerate(arg_avatar_dict.get('emblems', dict())):
+            setattr(self, f'emblem_{i+1}', emblem.get('itemName'))
 
+class PlatinumAvatar(Avatar):
+    def __init__(self):
+        super().__init__()
+        self.emblem_3 = None
+    def get_avatar_data(self, arg_avatar_dict):
+        super().get_avatar_data(arg_avatar_dict)
 
 class Avatars():
     def __init__(self, arg_api_key):
@@ -36,16 +30,25 @@ class Avatars():
             Args :
                 arg_api_key(str) : Neople Open API key
         """        
-        self.__api_key = arg_api_key  
-        for avatar in AVATAR_LIST:
-            exec(f"self.{avatar} = Avatar()")  
+        self.__api_key = arg_api_key
+        # for avatar in AVATAR_LIST:
+        #     exec(f"self.{avatar} = Avatar()")  
 
     def get_data(self, arg_server_id, arg_character_id):    
         url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/avatar?apikey={self.__api_key}'
-        data = get_request(url)
-        data = data['avatar'] 
-        for avatar in AVATAR_LIST:
-            try:
-                exec(f"self.{avatar}.get_avatar_data(one_slot(data, '{avatar}'.upper()))")
-            except:
-                pass    
+        return get_request(url)
+
+    def parse_data(self, arg_data):
+        if arg_data.get('avatar'):
+            arg_data = arg_data['avatar'] 
+            for avatar in arg_data:
+                if avatar["slotId"].lower() in PLATINUM_AVATAR_LIST:
+                    avatar_data = PlatinumAvatar()    
+                else:
+                    avatar_data = Avatar()
+                avatar_data.get_avatar_data(avatar)
+                setattr(self, f'{avatar["slotId"].lower()}', avatar_data)
+
+                #exec(f"self.{avatar}.get_avatar_data(one_slot(data, '{avatar}'.upper()))")
+            # except:
+            #     pass    
