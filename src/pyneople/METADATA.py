@@ -67,6 +67,8 @@ CHARACTER_SEARCH_NAME = {
     'character_id': 'characterId',
     'character_name': 'characterName',
     'level': 'level',
+    'job_id' : 'jobId',
+    'job_grow_id' : 'jobGrowId',
     'job_name': 'jobName',
     'job_grow_name': 'jobGrowName',
     'fame': 'fame',
