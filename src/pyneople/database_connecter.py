@@ -192,12 +192,13 @@ def insert_into_table(arg_cursor , arg_table_name : str, arg_columns : list, arg
     주의사항 : 해당 함수는 connectiom.commit() 을 실행하지 않음
     """
     # 데이터를 삽입하기
-    duplication_dict = {True : "ON CONFLICT DO NOTHING", False : ""}
+    # duplication_dict = {True : "ON CONFLICT DO NOTHING", False : ""}
     
-    insert_query = sql.SQL("INSERT INTO {} ({}) VALUES {} {}").format(
+    insert_query = sql.SQL("INSERT INTO {} ({}) VALUES {}").format(
         sql.Identifier(arg_table_name),
         sql.SQL(', ').join(map(sql.Identifier, arg_columns)),
-        sql.SQL(', ').join(map(sql.Literal, arg_data)),
-        duplication_dict[arg_ignore_duplication]
-    )
+        sql.SQL(', ').join(map(sql.Literal, arg_data))
+        )
+    if arg_ignore_duplication:
+        insert_query += sql.SQL(" ON CONFLICT DO NOTHING") 
     arg_cursor.execute(insert_query)                    
