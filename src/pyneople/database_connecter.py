@@ -142,10 +142,10 @@ class PostgreSQLConnecter():
         """    
         columns_str = ', '.join(arg_columns)
         if arg_drop :
-            self.execute(self, f"DROP TABLE IF EXISTS {arg_table_name};")
-            self.execute(self, f"CREATE TABLE {arg_table_name} ({columns_str});")
+            self.execute(f"DROP TABLE IF EXISTS {arg_table_name};")
+            self.execute(f"CREATE TABLE {arg_table_name} ({columns_str});")
         else :
-            self.execute(self, f"CREATE TABLE {arg_table_name} ({columns_str});")
+            self.execute(f"CREATE TABLE {arg_table_name} ({columns_str});")
 
 
     def get_column_names(self, arg_table_name : str):
@@ -164,7 +164,7 @@ class PostgreSQLConnecter():
         '''
         해당 데이터베이스의 table 이름의 list를 반환하는 함수
         '''
-        data = self.fetch(self, 
+        data = self.fetch( 
         """
         SELECT
             table_schema || '.' || table_name
