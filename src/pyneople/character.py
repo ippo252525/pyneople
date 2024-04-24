@@ -56,8 +56,7 @@ class CharacterSearch(PyNeople):
             pass
         else:
             raise ValueError("서버 이름을 확인하시오")
-
-        
+        self._server_id = arg_server_name
         url = f"https://api.neople.co.kr/df/servers/{arg_server_name}/characters?characterName={urllib.parse.quote(arg_character_name)}&limit=1&apikey={self._api_key}"
         
         # parse_data에 매개변수로 사용 될 것을 생각해서 dict를 받을 수 있도록 정보 다듬어서 제공
@@ -94,9 +93,9 @@ class CharacterInformation(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """    
+        self._server_id = arg_server_id
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}?apikey={self._api_key}"
-
-        return get_request(url)        
+        return get_request(url)
     
     def parse_data(self, arg_data : dict, attribute_list : Iterable[str] = CHARACTER_INFORMATION_NAME.keys()):
         """
@@ -146,6 +145,7 @@ class Timeline(PyNeople):
                 
                 arg_print_log(boolean) : 데이터 수집의 과정의 print 여부   
         """
+        self._server_id = arg_server_id
         timeline = []
         
         end_date = datetime.datetime.strptime(arg_end_date, '%Y-%m-%d %H:%M')
@@ -207,10 +207,9 @@ class Status(PyNeople):
                 
                 arg_character_id(str) : 캐릭터 ID
         """
-
+        self._server_id = arg_server_id
         url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/status?apikey={self._api_key}'
         return get_request(url)
-        
     def parse_data(self, arg_data : dict, attribute_list : Iterable[str] = STATUS_NAME.keys()):
         """
         데이터를 정리해서 하위 attribute에 저장
@@ -371,6 +370,7 @@ class Equipments(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """        
+        self._server_id = arg_server_id
         url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/equipment?apikey={self._api_key}'
         return get_request(url)
 
@@ -451,6 +451,7 @@ class Avatars(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """        
+        self._server_id = arg_server_id
         url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/avatar?apikey={self._api_key}'
         return get_request(url)
 
@@ -488,6 +489,7 @@ class Creature(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """
+        self._server_id = arg_server_id
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/creature?apikey={self._api_key}"
         return get_request(url)
     
@@ -515,6 +517,7 @@ class Flag(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """        
+        self._server_id = arg_server_id
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/flag?apikey={self._api_key}"
         return get_request(url)
     
@@ -563,6 +566,7 @@ class Talismans(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """                
+        self._server_id = arg_server_id
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/talisman?apikey={self._api_key}"         
         return get_request(url)
     
@@ -593,6 +597,7 @@ class EquipmentTrait(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """                
+        self._server_id = arg_server_id
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/equipment-trait?apikey={self._api_key}"
         return get_request(url)
     
@@ -633,8 +638,9 @@ class SkillStyle(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """                
+        self._server_id = arg_server_id
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/style?apikey={self._api_key}"
-        return get_request(url)                
+        return get_request(url)
 
     def parse_data(self, arg_data : dict):
         """
@@ -694,6 +700,7 @@ class Buff(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """   
+        self._server_id = arg_server_id
         buff_info_dict = {}     
         buff_equipment_data = get_request(f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/buff/equip/equipment?apikey={self._api_key}")
         buff_avatar_data = get_request(f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/buff/equip/avatar?apikey={self._api_key}")
