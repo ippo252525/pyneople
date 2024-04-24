@@ -6,6 +6,14 @@ from .METADATA import SETTINGS
 
 __all__ = ['change_settings', 'get_request', 'jobname_equalize', 'get_job_info', 'system_maintenance']
 
+class PyneopleError(Exception):
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+
+class ServerMaintenanceError(Exception):
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+
 def change_settings(arg_time_out : int = 5, arg_time_sleep : float = 0.0015):
     """
     request에 필요한 설정 값을 바꾸는 함수
@@ -31,7 +39,10 @@ def get_request(arg_url : str):
     data = json.loads(data.text)
     # Neople Open API 상에서 규정된 에러가 발생할 경우 에러를 발생시킨다.
     if data.get("error"):
-        raise Exception(data.get("error"))
+        if data.get("error").get('status') == 503:
+            raise ServerMaintenanceError
+        else:
+            raise PyneopleError(data.get("error"))
     elapsed_time = time.time() - start_time
     if elapsed_time < SETTINGS['request_time_sleep']:
         time.sleep(SETTINGS['request_time_sleep'] - elapsed_time)
