@@ -1,12 +1,13 @@
 from .character import CharacterFame, CharacterSearch
 from .functions import get_request, ServerMaintenanceError, PyneopleError
 from multiprocessing import Process, Queue, Value
+from typing import Callable
 from pymongo import MongoClient
 import time
 import psycopg2
 from psycopg2 import sql
 
-def store_data_to_mongodb(
+def store_fame_data_to_mongodb(
         arg_mongo_client_instance : MongoClient,
         arg_database_name : str,
         arg_collection_name : str,
@@ -98,11 +99,16 @@ def store_data_to_mongodb(
         args_queue.put(args_dict)        
 
     for process in processes:
-        process.join()           
-                
+        process.join()        
+
 class PostgreSQLConnecter():
     
     def __init__(self, arg_database_connection_dict : dict):
+        """
+        생성자 함수로 database connect의 인자로 전달되는 dict를 입력받는다.
+            Args:
+                arg_database_connection_dict(dict) : psycopg2.connect 함수의 인자로 사용될 dict
+        """
         self.connection = psycopg2.connect(**arg_database_connection_dict)
 
     def execute(self, arg_sql : str):
@@ -203,3 +209,62 @@ class PostgreSQLConnecter():
         if arg_ignore_duplication:
             insert_query += sql.SQL(" ON CONFLICT DO NOTHING") 
         arg_cursor.execute(insert_query)                    
+
+def mongodb_to_postgresql(arg_postgresql_connecter : PostgreSQLConnecter, 
+                          arg_postgresql_table_name : str,
+                          arg_mongo_client : MongoClient, 
+                          arg_mongo_database_name : str,
+                          arg_mongo_collection_name : str,
+                          arg_preprocess_function : Callable, 
+                          batch_size : int = 100):
+    """
+    MomgoDB 에 저장된 데이터를 Postgresql로 전처리 후 batch_size씩 저장하는 함수
+        Args :
+            arg_postgresql_connecter(PostgreSQLConnecter) : pyneople database connecter
+            arg_postgresql_table_name(str) :  저장하려는 PostgreSQL table name
+            arg_mongo_client(MongoClient) : pymongo 의 MongoClient 객체
+            arg_mongo_database_name(str) : MongoDB의 database name
+            arg_mongo_collection_name(str) : MongoDB의 collection name
+            arg_preprocess_function(Callable) : 전처리 함수(input으로 MongoDB의 document가 들어가며 tuple 또는 tuple로 이루어진 list를 반환해야 한다.)
+            batch_size(int) : 한번에 조회, 저장하는 document 개수
+    """
+    postgresql_columns = arg_postgresql_connecter.get_column_names(arg_postgresql_table_name)
+    postgresql_cursor = arg_postgresql_connecter.connection.cursor()
+
+    mongo_database = arg_mongo_client[arg_mongo_database_name]
+    mongo_collection = mongo_database[arg_mongo_collection_name]
+    
+    # 일괄 처리 크기
+    total_data_count = mongo_collection.count_documents({})
+    count = 0
+    # MongoDB 데이터 조회 및 PostgreSQL에 삽입
+    for skip in range(0, total_data_count, batch_size):
+
+        mongo_cursor = mongo_collection.find().skip(skip).limit(batch_size)
+        batch_data = list(mongo_cursor)
+
+        if not batch_data:
+            break
+
+        # PostgreSQL에 데이터 삽입
+        insert_data_list = []
+        for document in batch_data:
+            if isinstance(arg_preprocess_function(document), tuple):
+                insert_data_list.append(arg_preprocess_function(document))
+            elif isinstance(arg_preprocess_function(document), list):
+                insert_data_list += arg_preprocess_function(document)
+            else:
+                TypeError("전처리 함수는 tuple 또는 list of tuple을 반환해야 합니다.")
+        arg_postgresql_connecter.insert_into_table(postgresql_cursor, arg_postgresql_table_name, postgresql_columns, insert_data_list)
+        arg_postgresql_connecter.connection.commit()
+        count += batch_size
+        print(f"{count}/{total_data_count}", end="\r")
+
+        
+    # 연결 종료
+    arg_mongo_client.close()
+    postgresql_cursor.close()
+    arg_postgresql_connecter.connection.close()
+    print("done")    
+
+            
