@@ -53,7 +53,7 @@ JOB_NAME_LENGTH = max(list(map(lambda x : len(x), list(JOBCLASS.keys()))))
 del jobclass_list
 
 # 착용가능 장비
-EQUIPMENT_LIST = ['weapon', 'title', 'jacket', 'shoulder', 'pants', 'shoes', 'waist', 'amulet', 'wrist', 'ring', 'support', 'magic_ston', 'earring']
+EQUIPMENT_LIST = ['weapon', 'title', 'jacket', 'shoulder', 'pants', 'shoes', 'waist', 'amulet', 'wrist', 'ring', 'support', 'magic_ston', 'earring', 'set_item_info']
 
 # 착용가능 아바타
 AVATAR_LIST = ['headgear', 'hair', 'face', 'jacket', 'pants', 'shoes', 'breast', 'waist', 'skin', 'aurora', 'weapon']
@@ -175,3 +175,40 @@ STATUS_NAME = {
     'burn_damage': '화상 피해',
     'electrocution_damage': '감전 피해'
  }
+
+BASE_EQUIPMENT_NAME = {
+    'item_name' :'itemName',
+    'item_available_level' :'itemAvailableLevel',
+    'item_rarity' :'itemRarity',
+    'reinforce' :'reinforce',
+    'amplification_name' :'amplificationName',
+    'refine' :'refine', 
+    'item_grade_name' :'itemGradeName',
+    'enchant' : 'enchant'
+}
+
+EQUIPMENT_NAME = {
+    'upgrade_info' : 'upgrade_info',
+    'mist_gear' :  'mist_gear',
+    'grow_info' : 'grow_info'
+}
+
+WEAPON_NAME = {
+    'bakal_info' : 'bakal_info',
+    'asrahan_info':'asrahan_info'
+}
+
+AVATAR_NAME = {
+        'item_name' : "itemName",
+        'item_rarity' : "itemRarity",
+        'option_ability' : "optionAbility",
+        'emblems' : 'emblems'
+}
+
+PLATINUM_AVATAR_NAME = {
+        'item_name' : "itemName",
+        'item_rarity' : "itemRarity",
+        'option_ability' : "optionAbility",
+        'emblems' : 'emblems',
+        'platinum_emblem' : 'emblems'
+}
