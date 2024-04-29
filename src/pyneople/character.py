@@ -302,12 +302,13 @@ class BaseEquipment():
     """    
     sub_attribute_list = BASE_EQUIPMENT_NAME.keys()
     def __init__(self):
-        print(BaseEquipment.sub_attribute_list)
         for sub_attribute in BaseEquipment.sub_attribute_list:
             setattr(self, sub_attribute, None)
     
     @classmethod
     def set_sub_attributes(cls, new_attribute_list : list[str]):
+        for new_attribute in new_attribute_list:
+            assert new_attribute in cls.sub_attribute_list
         cls.sub_attribute_list = new_attribute_list
 
     def get_equipment_data(self, arg_equipment_dict : dict):
@@ -530,7 +531,7 @@ class Avatar():
     
     def __init__(self):
         for sub_attribute in Avatar.sub_attribute_list:
-            if sub_attribute == "emblem":
+            if sub_attribute == "emblems":
                 for i in range(1,3):
                     setattr(self, f"{sub_attribute}_{i}", None)
             else:
@@ -543,13 +544,16 @@ class Avatar():
         # self.emblem_2 = None        # 엠블렘2 옵션
     @classmethod
     def set_sub_attributes(cls, new_attribute_list : list[str]):
+        for new_attribute in new_attribute_list:
+            if not new_attribute in cls.sub_attribute_list:
+                raise ValueError("사용할 수 없는 하위 속성입니다.")         
         cls.sub_attribute_list = new_attribute_list
 
     def get_avatar_data(self, arg_avatar_dict):
         for sub_attribute in Avatar.sub_attribute_list:
-            if sub_attribute == 'emblem':
+            if sub_attribute == 'emblems':
                 for emblem in arg_avatar_dict.get('emblems', dict()):
-                    setattr(self, f"emblem_{emblem.get('slotId')}", emblem.get('itemName'))
+                    setattr(self, f"{sub_attribute}_{emblem.get('slotNo')}", emblem.get('itemName'))
             else:    
                 setattr(self, sub_attribute, arg_avatar_dict.get(AVATAR_NAME[sub_attribute]))
         # self.item_name = arg_avatar_dict.get("itemName")
@@ -562,23 +566,29 @@ class PlatinumAvatar(Avatar):
     """
     Avatars를 위해 사용되는 Class
     """   
-    sub_attribute_list = PLATINUM_AVATAR_NAME
+    sub_attribute_list = PLATINUM_AVATAR_NAME.keys()
     def __init__(self):
         for sub_attribute in PlatinumAvatar.sub_attribute_list:
-            if sub_attribute == "emblem":
+            if sub_attribute == "emblems":
                 for i in range(1,3):
                     setattr(self, f"{sub_attribute}_{i}", None)
             elif sub_attribute == "platinum_emblem":
                 setattr(self, sub_attribute, None)    
             else:
                 setattr(self, sub_attribute, None)
-
+    # @classmethod
+    # def set_sub_attributes(cls, new_attribute_list : list[str]):
+    #     for new_attribute in new_attribute_list:
+    #         if not new_attribute in cls.sub_attribute_list:
+    #             raise ValueError("사용할 수 없는 하위 속성입니다.")         
+    #     cls.sub_attribute_list = new_attribute_list
     def get_avatar_data(self, arg_avatar_dict):
-        for sub_attribute in Avatar.sub_attribute_list:
-            if sub_attribute == 'emblem':
+        
+        for sub_attribute in PlatinumAvatar.sub_attribute_list:
+            if sub_attribute == 'emblems':
                 for emblem in arg_avatar_dict.get(PLATINUM_AVATAR_NAME[sub_attribute], dict()):
                     if emblem.get('slotColor') != '플래티넘':
-                        setattr(self, f"{sub_attribute}_{emblem.get('slotId')}", emblem.get('itemName'))
+                        setattr(self, f"{sub_attribute}_{emblem.get('slotNo') - 1}", emblem.get('itemName'))
             elif sub_attribute == "platinum_emblem":
                 for emblem in arg_avatar_dict.get(PLATINUM_AVATAR_NAME[sub_attribute], dict()):
                     if emblem.get('slotColor') == '플래티넘':
@@ -625,7 +635,7 @@ class Avatars(PyNeople):
         
         # 하위 속성에 데이터 할당
         for avatar in arg_data.get('avatar', list()):
-            if f'{avatar["slotId"].lower()}' in Avatars.sub_attribute_list:
+            if avatar["slotId"].lower() in Avatars.sub_attribute_list:
                 getattr(self, f'{avatar["slotId"].lower()}').get_avatar_data(avatar)
 
 
