@@ -3,7 +3,8 @@ import urllib.parse
 from typing import Iterable, Union
 from .functions import get_request, explain_enchant
 from .METADATA import SERVER_NAME_2_ID, CHARACTER_SEARCH_NAME, \
-                    CHARACTER_INFORMATION_NAME, STATUS_NAME, EQUIPMENT_LIST, AVATAR_LIST, PLATINUM_AVATAR_LIST, BASE_EQUIPMENT_NAME, EQUIPMENT_NAME, WEAPON_NAME, AVATAR_NAME, PLATINUM_AVATAR_NAME
+                    CHARACTER_INFORMATION_NAME, STATUS_NAME, EQUIPMENT_LIST, AVATAR_LIST, PLATINUM_AVATAR_LIST, \
+                    BASE_EQUIPMENT_NAME, EQUIPMENT_NAME, WEAPON_NAME, AVATAR_NAME, PLATINUM_AVATAR_NAME, GROWINFO_NAME
 
 __all__ = [
     "CharacterSearch",
@@ -33,13 +34,28 @@ class PyNeople():
         """        
         self._api_key = arg_api_key
 
-class CharacterSearch(PyNeople):
+class PyNeopleAttributeSetter(PyNeople):
+    """
+    하위 Attribute를 설정 할 수 있는 PyNeople Class 의 부모 Class
+    """
+
+    @classmethod
+    def set_sub_attributes(cls, arg_new_attribute_list : list[str]):
+        for new_attribute_name in arg_new_attribute_list:
+            if not new_attribute_name in cls.default_sub_attribute_list:
+                raise ValueError("사용할 수 없는 attribute 입니다.")
+        cls.sub_attribute_list = arg_new_attribute_list
+
+    @classmethod        
+    def init_sub_attributes(cls):
+        cls.sub_attribute_list = cls.default_sub_attribute_list
+
+class CharacterSearch(PyNeopleAttributeSetter):
     """
     Neople Open API 02. 캐릭터 검색
     """
-
-    def __init__(self, arg_api_key : str):
-        super().__init__(arg_api_key)
+    default_sub_attribute_list = CHARACTER_SEARCH_NAME.keys()
+    sub_attribute_list = default_sub_attribute_list
 
     def get_data(self, arg_server_name : str, arg_character_name : str):
         """
@@ -65,11 +81,6 @@ class CharacterSearch(PyNeople):
             return get_request(url).get("rows")[0]
         except IndexError:
             return dict()
-    sub_attribute_list = CHARACTER_SEARCH_NAME.keys()
-    
-    @classmethod
-    def set_sub_attributes(cls, new_attribute_list : list[str]):
-        cls.sub_attribute_list = new_attribute_list
 
     def parse_data(self, arg_data : dict):
         """
@@ -83,13 +94,12 @@ class CharacterSearch(PyNeople):
             setattr(self, attribute_name, arg_data.get(CHARACTER_SEARCH_NAME[attribute_name]))
 
 
-class CharacterInformation(PyNeople):
+class CharacterInformation(PyNeopleAttributeSetter):
     """
     Neople Open API 03. 캐릭터 '기본정보' 조회
     """
-    def __init__(self, arg_api_key : str):
-        super().__init__(arg_api_key)
-    
+    default_sub_attribute_list = CHARACTER_INFORMATION_NAME.keys()
+    sub_attribute_list = default_sub_attribute_list
     def get_data(self, arg_server_id : str, arg_character_id : str):
         """
         영문 서버 이름과 캐릭터 ID 를 검색하면 기본 정보를 반환
@@ -98,15 +108,9 @@ class CharacterInformation(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """    
-        self._server_id = arg_server_id
+        self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}?apikey={self._api_key}"
         return get_request(url)
-    
-    sub_attribute_list = CHARACTER_INFORMATION_NAME.keys()
-    
-    @classmethod
-    def set_sub_attributes(cls, new_attribute_list : list[str]):
-        cls.sub_attribute_list = new_attribute_list
 
     def parse_data(self, arg_data : dict):
 
@@ -124,11 +128,7 @@ class CharacterInformation(PyNeople):
 class Timeline(PyNeople):
     """
     Neople Open API 04. 캐릭터 '타임라인 정보' 조회
-    """    
-
-    def __init__(self, arg_api_key : str):
-        super().__init__(arg_api_key)
-    
+    """  
     def get_data(self, 
                  arg_server_id : str, 
                  arg_character_id : str, 
@@ -155,9 +155,9 @@ class Timeline(PyNeople):
                 
                 arg_code(int) : 수집하고 싶은 타임라인 코드 ex)201, 202 참조) https://developers.neople.co.kr/contents/guide/pages/all 
                 
-                arg_print_log(boolean) : 데이터 수집의 과정의 print 여부   
+                arg_print_log(boolean) : 데이터 수집의 과정의 print 여부
         """
-        self._server_id = arg_server_id
+        self._total_id = f"{arg_server_id} {arg_character_id}"
         timeline = []
         
         end_date = datetime.datetime.strptime(arg_end_date, '%Y-%m-%d %H:%M')
@@ -201,16 +201,15 @@ class Timeline(PyNeople):
                     start_date = datetime.datetime.strptime(arg_last_end_date, '%Y-%m-%d %H:%M')
                 next = ""    
                 continue
-        return timeline
+        return {'timeline' : timeline} 
 
-class Status(PyNeople):
+class Status(PyNeopleAttributeSetter):
     """
     Neople Open API 05. 캐릭터 '능력치 정보' 조회
     """    
-
-    def __init__(self, arg_api_key : str):
-        super().__init__(arg_api_key)
-
+    default_sub_attribute_list = STATUS_NAME.keys()
+    sub_attribute_list = default_sub_attribute_list    
+    
     def get_data(self, arg_server_id : str, arg_character_id : str):
         """
         캐릭터의 모험단명부터 명성 등 정보를 반환한다
@@ -219,16 +218,9 @@ class Status(PyNeople):
                 
                 arg_character_id(str) : 캐릭터 ID
         """
-        self._server_id = arg_server_id
+        self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/status?apikey={self._api_key}'
         return get_request(url)
-
-    sub_attribute_list = STATUS_NAME.keys()
-    
-    @classmethod
-    def set_sub_attributes(cls, new_attribute_list : list[str]):
-        cls.sub_attribute_list = new_attribute_list
-
 
     def parse_data(self, arg_data : dict):
         """
@@ -257,86 +249,68 @@ class Status(PyNeople):
         
         # 하위 속성에 데이터 할당
         for attribute_name in Status.sub_attribute_list:
-            setattr(self, attribute_name, arg_data.get(STATUS_NAME[attribute_name]))
+            setattr(self, attribute_name, arg_data.get(STATUS_NAME[attribute_name])) 
 
-class OptionInfo():
+class GrowInfo(PyNeopleAttributeSetter):
     """
     Equipments를 위해 사용되는 Class
     """
-
-    def __init__(self):
-        self.explain = None
+    default_sub_attribute_list = GROWINFO_NAME.keys()
+    sub_attribute_list = default_sub_attribute_list    
     
-    def get_option_info_data(self, arg_option_info_dict : dict):
-        self.explain = arg_option_info_dict.get('explain').replace("'", "") # 얼음 땡 옵션 예외처리를 위한 replace    
-
-class GrowInfo():
-    """
-    Equipments를 위해 사용되는 Class
-    """    
-
     def __init__(self):
-        self.level = None       # 장비 성장 레벨
-        self.exp_rate = None    # 장비 성장 경험치
-        self.transfer = None    # 전송 받은 옵션
-        self.option_1 = None    # 1옵션
-        self.option_2 = None    # 2옵션
-        self.option_3 = None    # 3옵션
-        self.option_4 = None    # 4옵션
+        for sub_attribute_name in GrowInfo.sub_attribute_list:
+            if sub_attribute_name == "option":
+                setattr(self, "transfer", None)
+                for i in range(1,5):
+                    setattr(self, f"{sub_attribute_name}_{i}", None)
+            else:
+                setattr(self, sub_attribute_name, None)
 
     def get_grow_info_data(self, arg_grow_info_dict : dict):
-        self.level = arg_grow_info_dict.get('level')
-        self.exp_rate = arg_grow_info_dict.get('expRate', 0)
-        if arg_grow_info_dict.get('options'):
-            for i, option in enumerate(arg_grow_info_dict.get('options')):
-                if option.get('transfer') == True:
-                    setattr(self, 'transfer', i+1)
-                else:
-                    pass    
-                setattr(self, f'option_{i+1}', option.get('explain')) 
+        for sub_attribute_name in GrowInfo.sub_attribute_list:
+            if sub_attribute_name == "option":
+                if arg_grow_info_dict.get(GROWINFO_NAME[sub_attribute_name]):
+                    for i, option in enumerate(arg_grow_info_dict.get(GROWINFO_NAME[sub_attribute_name])):
+                        setattr(self, f'option_{i+1}', option.get('explain'))                            
+                        if option.get('transfer'):
+                            setattr(self, 'transfer', i+1)
+            else:   
+                setattr(self, sub_attribute_name, arg_grow_info_dict.get(GROWINFO_NAME[sub_attribute_name])) 
 
-class BaseEquipment():
+class BaseEquipment(PyNeopleAttributeSetter):
     """
     Equipments를 위해 사용되는 Class
     가장 기초적인 장비 정보를 담으며 다른 장비에 부모클래스로 이용된다.
     """    
-    sub_attribute_list = BASE_EQUIPMENT_NAME.keys()
+    default_sub_attribute_list = BASE_EQUIPMENT_NAME.keys()
+    sub_attribute_list = default_sub_attribute_list
+    
     def __init__(self):
         for sub_attribute in BaseEquipment.sub_attribute_list:
             setattr(self, sub_attribute, None)
-    
-    @classmethod
-    def set_sub_attributes(cls, new_attribute_list : list[str]):
-        for new_attribute in new_attribute_list:
-            assert new_attribute in cls.sub_attribute_list
-        cls.sub_attribute_list = new_attribute_list
 
     def get_equipment_data(self, arg_equipment_dict : dict):
         
         for sub_attribute in BaseEquipment.sub_attribute_list:
             if sub_attribute == 'enchant':
                 setattr(self, sub_attribute, explain_enchant(arg_equipment_dict.get('enchant')))
-                pass
             else:    
                 setattr(self, sub_attribute, arg_equipment_dict.get(BASE_EQUIPMENT_NAME[sub_attribute]))
 
 class Equipment(BaseEquipment):
     """
     Equipments를 위해 사용되는 Class
-    """
-    sub_attribute_list = EQUIPMENT_NAME.keys()
+    """ 
+    default_sub_attribute_list = EQUIPMENT_NAME.keys()
+    sub_attribute_list = default_sub_attribute_list
     def __init__(self):
         super().__init__()
-        print(Equipment.sub_attribute_list)
         for sub_attribute in Equipment.sub_attribute_list:
             if sub_attribute == 'grow_info':
                 setattr(self, sub_attribute, GrowInfo())
             else:
                 setattr(self, sub_attribute, None)
-
-    # @classmethod
-    # def set_sub_attributes(cls, new_attribute_list : list[str]):
-    #     cls.sub_attribute_list = new_attribute_list
 
     def get_equipment_data(self, arg_equipment_dict):
         super().get_equipment_data(arg_equipment_dict)
@@ -362,50 +336,7 @@ class Equipment(BaseEquipment):
                     pass
             else:
                 pass    
-    # def __init__(self):
-    #     self.item_name = None
-    #     self.item_available_level = None
-    #     self.item_rarity = None
-    #     self.reinforce = None
-    #     self.item_grade_name = None
-    #     self.enchant = None
-    #     self.amplification_name = None
-    #     self.refine = None
-    #     self.upgrade_info = None
-    #     self.mist_gear = None
-    #     self.grow_info = GrowInfo()
     
-    # def get_equipment_data(self, arg_equipment_dict : dict):
-    #     self.item_name = arg_equipment_dict.get('itemName') # 이름
-    #     self.item_available_level = arg_equipment_dict.get('itemAvailableLevel') # 레벨 제한
-    #     self.item_rarity = arg_equipment_dict.get('itemRarity') # 레어도
-    #     self.reinforce = arg_equipment_dict.get('reinforce') # 강화수치             
-    #     self.amplification_name = arg_equipment_dict.get('amplificationName') # 차원의 기운 여부 ex 차원의 힘, 차원의 지능, None
-    #     self.refine = arg_equipment_dict.get('refine') # 제련   
-    #     self.item_grade_name = arg_equipment_dict.get('itemGradeName') # 등급(최상~최하)
-    #     self.enchant = explain_enchant(arg_equipment_dict.get('enchant')) # 마법부여
-
-    #     # 미스트 기어 정보
-    #     if arg_equipment_dict.get('mistGear'):
-    #         self.mist_gear = 'mist_gear'
-    #     elif arg_equipment_dict.get('pureMistGear'):
-    #         self.mist_gear = 'pure_mist_gear'   
-    #     elif arg_equipment_dict.get('refinedMistGear'):
-    #         self.mist_gear = 'refined_mistgear'                   
-    #     else :
-    #         pass    
-
-
-    #     if arg_equipment_dict.get("upgradeInfo"):
-    #         self.upgrade_info = arg_equipment_dict.get("upgradeInfo").get('itemName') # 융합장비
-        
-    #     # 105제 성장 장비 정보
-    #     if arg_equipment_dict.get("customOption"):
-    #         self.grow_info.get_grow_info_data(arg_equipment_dict.get('customOption'))
-    #     elif arg_equipment_dict.get("fixedOption"):
-    #         self.grow_info.get_grow_info_data(arg_equipment_dict.get("fixedOption"))
-    #     else :
-    #         pass
 
 class BakalInfo():
     """
@@ -417,7 +348,7 @@ class BakalInfo():
         self.option_2 = None
         self.option_3 = None
 
-    def get_bakal_info_data(self, arg_bakal_info_dict):
+    def get_info_data(self, arg_bakal_info_dict):
         if arg_bakal_info_dict.get('options'):
             for i, option in enumerate(arg_bakal_info_dict.get('options')):
                 setattr(self, f'option_{i+1}',option.get('explain'))                
@@ -430,18 +361,19 @@ class Asrahan_Info():
         self.memory_cluster = None
         self.memory_destination = None
 
-    def get_asrahan_info_data(self, arg_asrahan_info_dict):
-        for asrahan_info in arg_asrahan_info_dict.get('options'):
+    def get_info_data(self, arg_asrahan_info_dict):
+        for asrahan_info in arg_asrahan_info_dict.get('options', list()):
             if asrahan_info.get('name') == '기억의 종착지':
-                self.memory_destination = asrahan_info.get('step')     
+                self.memory_destination = asrahan_info.get('step')
             else:
-                self.memory_cluster = asrahan_info.get('step')     
+                self.memory_cluster = asrahan_info.get('step')
 
 class Weapon(Equipment):
     """
     Equipments를 위해 사용되는 Class
     """
-    sub_attribute_list = WEAPON_NAME.keys()
+    default_sub_attribute_list = WEAPON_NAME.keys()
+    sub_attribute_list = default_sub_attribute_list
     def __init__(self):
         super().__init__()
         for sub_attribute in Weapon.sub_attribute_list:
@@ -455,24 +387,20 @@ class Weapon(Equipment):
     def get_equipment_data(self, arg_equipment_dict):
         super().get_equipment_data(arg_equipment_dict)
         for sub_attribute in Weapon.sub_attribute_list:
-            if sub_attribute == 'bakal_info':
-                self.bakal_info.get_bakal_info_data(arg_equipment_dict.get("bakalInfo", dict())) # 바칼 무기 융합
-            elif sub_attribute == 'asrahan_info':
-                self.asrahan_info.get_asrahan_info_data(arg_equipment_dict.get("asrahanOption", dict()))
-            else:
-                pass    
+            getattr(self, sub_attribute).get_info_data(arg_equipment_dict.get(WEAPON_NAME[sub_attribute], dict()))
+            # if sub_attribute == 'bakal_info':
+            #     self.bakal_info.get_bakal_info_data(arg_equipment_dict.get(WEAPON_NAME[sub_attribute], dict())) # 바칼 무기 융합
+            # elif sub_attribute == 'asrahan_info':
+            #     self.asrahan_info.get_asrahan_info_data(arg_equipment_dict.get("asrahanOption", dict()))
+            # else:
+            #     pass    
 
-class Equipments(PyNeople):
+class Equipments(PyNeopleAttributeSetter):
     """
     Neople Open API 06. 캐릭터 '장착 장비' 조회
     """    
-    sub_attribute_list = EQUIPMENT_LIST
-    def __init__(self, arg_api_key : str):
-        super().__init__(arg_api_key)
-    
-    @classmethod
-    def set_sub_attributes(cls, new_attribute_list : list[str]):
-        cls.sub_attribute_list = new_attribute_list
+    default_sub_attribute_list = EQUIPMENT_LIST
+    sub_attribute_list = default_sub_attribute_list
     
     def get_data(self, arg_server_id : str, arg_character_id : str):
         """
@@ -482,7 +410,7 @@ class Equipments(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """        
-        self._server_id = arg_server_id
+        self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/equipment?apikey={self._api_key}'
         return get_request(url)
     
@@ -523,11 +451,12 @@ class Equipments(PyNeople):
             else:
                 pass        
 
-class Avatar():
+class Avatar(PyNeopleAttributeSetter):
     """
     Avatars를 위해 사용되는 Class
     """
-    sub_attribute_list = AVATAR_NAME.keys()
+    default_sub_attribute_list = AVATAR_NAME.keys()
+    sub_attribute_list = default_sub_attribute_list
     
     def __init__(self):
         for sub_attribute in Avatar.sub_attribute_list:
@@ -542,12 +471,6 @@ class Avatar():
         # self.option_ability = None  # 아바타 옵션
         # self.emblem_1 = None        # 엠블렘1 옵션
         # self.emblem_2 = None        # 엠블렘2 옵션
-    @classmethod
-    def set_sub_attributes(cls, new_attribute_list : list[str]):
-        for new_attribute in new_attribute_list:
-            if not new_attribute in cls.sub_attribute_list:
-                raise ValueError("사용할 수 없는 하위 속성입니다.")         
-        cls.sub_attribute_list = new_attribute_list
 
     def get_avatar_data(self, arg_avatar_dict):
         for sub_attribute in Avatar.sub_attribute_list:
@@ -596,11 +519,12 @@ class PlatinumAvatar(Avatar):
             else:    
                 setattr(self, sub_attribute, arg_avatar_dict.get(AVATAR_NAME[sub_attribute]))
 
-class Avatars(PyNeople):
+class Avatars(PyNeopleAttributeSetter):
     """
     Neople Open API 07. 캐릭터 '장착 아바타' 조회
     """       
-    sub_attribute_list = AVATAR_LIST
+    default_sub_attribute_list = AVATAR_LIST
+    sub_attribute_list = default_sub_attribute_list
     def __init__(self, arg_api_key: str):
         super().__init__(arg_api_key)
     
@@ -616,7 +540,7 @@ class Avatars(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """        
-        self._server_id = arg_server_id
+        self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/avatar?apikey={self._api_key}'
         return get_request(url)
 
@@ -655,7 +579,7 @@ class Creature(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """
-        self._server_id = arg_server_id
+        self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/creature?apikey={self._api_key}"
         return get_request(url)
     
@@ -683,7 +607,7 @@ class Flag(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """        
-        self._server_id = arg_server_id
+        self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/flag?apikey={self._api_key}"
         return get_request(url)
     
@@ -732,7 +656,7 @@ class Talismans(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """                
-        self._server_id = arg_server_id
+        self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/talisman?apikey={self._api_key}"         
         return get_request(url)
     
@@ -763,7 +687,7 @@ class EquipmentTrait(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """                
-        self._server_id = arg_server_id
+        self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/equipment-trait?apikey={self._api_key}"
         return get_request(url)
     
@@ -804,7 +728,7 @@ class SkillStyle(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """                
-        self._server_id = arg_server_id
+        self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/style?apikey={self._api_key}"
         return get_request(url)
 
@@ -866,7 +790,7 @@ class Buff(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """   
-        self._server_id = arg_server_id
+        self._total_id = f"{arg_server_id} {arg_character_id}"
         buff_info_dict = {}     
         buff_equipment_data = get_request(f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/buff/equip/equipment?apikey={self._api_key}")
         buff_avatar_data = get_request(f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/buff/equip/avatar?apikey={self._api_key}")

@@ -4,13 +4,19 @@ import requests
 from .METADATA import JOBCLASS
 from .METADATA import SETTINGS
 
-__all__ = ['change_settings', 'get_request', 'jobname_equalize', 'get_job_info', 'system_maintenance']
+__all__ = ['change_settings', 'get_request', 'jobname_equalize', 'get_job_info', 'system_maintenance', 'NeopleOpenAPIError', 'ServerMaintenanceError', 'value_flatten', 'attr_flatten']
 
-class PyneopleError(Exception):
+class NeopleOpenAPIError(Exception):
+    """
+    Error 핸들링을 위한 Class
+    """
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
 
 class ServerMaintenanceError(Exception):
+    """
+    Error 핸들링을 위한 Class
+    """    
     def __init__(self, *args: object) -> None:
         super().__init__(*args)
 
@@ -42,7 +48,7 @@ def get_request(arg_url : str):
         if data.get("error").get('status') == 503:
             raise ServerMaintenanceError
         else:
-            raise PyneopleError(data.get("error"))
+            raise NeopleOpenAPIError(data.get("error"))
     elapsed_time = time.time() - start_time
     if elapsed_time < SETTINGS['request_time_sleep']:
         time.sleep(SETTINGS['request_time_sleep'] - elapsed_time)
@@ -66,6 +72,8 @@ def get_job_info(arg_api_key : str):
     전직명(각성명)을 1차 전직명으로 통일시키는 jobname_equalize 함수에 매개변수로 사용되는 객체를 반환함
         Args :
             arg_api_key(str) : Neople Open API key
+        Retruns :
+            jobname_equalize 함수에 매개변수로 사용되는 객체
     """
     data = get_request(f"https://api.neople.co.kr/df/jobs?apikey={arg_api_key}")
     job_list = []
@@ -139,7 +147,7 @@ def explain_enchant(arg_enchant_dict : dict):
         output = arg_enchant_dict['explain'] + ", " + output
     return output
 
-def is_attr(arg_object):
+def _is_attr(arg_object):
     """
     하위 속성이 있는지 확인하는 함수
     """
@@ -149,37 +157,37 @@ def is_attr(arg_object):
     except:
         return False
 
-def get_attr(arg_object, te = ""):
+def _get_attr(arg_object, te = ""):
     """
     객체의 하위 속성명을 list로 만들어주는 함수
     """
     st = []
     for sub in list(arg_object.__dict__.keys()):
-        if is_attr(getattr(arg_object, sub)) == False:
+        if _is_attr(getattr(arg_object, sub)) == False:
             if sub[0] != "_":
                 st.append(te + sub)
         else :     
-            st.append(get_attr(getattr(arg_object, sub), te + sub + "."))    
+            st.append(_get_attr(getattr(arg_object, sub), te + sub + "."))    
     return st    
 
-def get_values(arg_object):
+def _get_values(arg_object):
     """
     객체의 하위 속성값을 list로 만들어주는 함수
     """
     st = []
     for sub in list(arg_object.__dict__.keys()):
-        if is_attr(getattr(arg_object, sub)) == False:
+        if _is_attr(getattr(arg_object, sub)) == False:
             if sub[0] != "_":
                 st.append(getattr(arg_object, sub))
         else:
-            st.append(get_values(getattr(arg_object, sub)))    
+            st.append(_get_values(getattr(arg_object, sub)))    
     return st    
 
-def flatten(arg_list):
+def _flatten(arg_list):
     result = []
     for item in arg_list:
         if isinstance(item, list):
-            result += flatten(item)
+            result += _flatten(item)
         else:
             result.append(item)
     return result
@@ -188,31 +196,14 @@ def attr_flatten(arg_object):
     """
     객체를 입력받으면 모든 하위속성의 이름을 문자열 list로 반환한다
     """
-    arg_object = get_attr(arg_object)
-    arg_object = flatten(arg_object)
+    arg_object = _get_attr(arg_object)
+    arg_object = _flatten(arg_object)
     return arg_object
 
 def value_flatten(arg_object):
     """
     객체를 입력받으면 모든 하위속성의 값을 list로 반환한다
     """
-    arg_object = get_values(arg_object)
-    arg_object = flatten(arg_object)
+    arg_object = _get_values(arg_object)
+    arg_object = _flatten(arg_object)
     return arg_object
-
-# def one_slot(arg_equipment_list : list, arg_slot_name : str):
-#     """
-#     해당 부위의 정보만 반환하는 함수
-#         Args:
-#             arg_equipment_list(list) : 캐릭터 장비 데이터(dict)로 이루어진 list
-            
-#             arg_slot_name(str) : 해당 장비의 이름
-#         Returns:
-#             해당 장비의 dict            
-#     """
-#     if arg_equipment_list == []:
-#         return None
-#     for equipment in arg_equipment_list:
-#         if equipment['slotId'] == arg_slot_name :
-#             return equipment
-#     return None

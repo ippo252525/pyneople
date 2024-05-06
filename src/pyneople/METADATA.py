@@ -176,6 +176,13 @@ STATUS_NAME = {
     'electrocution_damage': '감전 피해'
  }
 
+GROWINFO_NAME = {
+        "level" : "level",
+        "exp_rate" : "expRate",
+        "option" : "options"
+}
+
+
 BASE_EQUIPMENT_NAME = {
     'item_name' :'itemName',
     'item_available_level' :'itemAvailableLevel',
@@ -194,8 +201,8 @@ EQUIPMENT_NAME = {
 }
 
 WEAPON_NAME = {
-    'bakal_info' : 'bakal_info',
-    'asrahan_info':'asrahan_info'
+    'bakal_info' : 'fusionOption',
+    'asrahan_info':'asrahanOption'
 }
 
 AVATAR_NAME = {
