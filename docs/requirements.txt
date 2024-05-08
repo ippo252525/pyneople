@@ -1,6 +1,6 @@
 sphinx
 sphinx-rtd-theme
-recommonmark
+myst_parser
 pymongo
 psycopg2
 pyneople
