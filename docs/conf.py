@@ -8,7 +8,7 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../src'))  # 프로젝트 소스 코드의 경로를 설정합니다.
+sys.path.insert(0, os.path.abspath('../src/pyneople'))  # 프로젝트 소스 코드의 경로를 설정합니다.
 
 # -- Project information -----------------------------------------------------
 
