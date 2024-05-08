@@ -1,5 +1,5 @@
 """
-database connecter
+데이터베이스와 상호작용하는 모듈입니다.
 """
 
 from .functions import get_request, ServerMaintenanceError, attr_flatten
@@ -28,11 +28,11 @@ def store_fame_data_to_mongodb(
     """
     최근 90일 이내 접속한 110 레벨 이상 캐릭터 전체를 MongoDB에 저장하는 함수
         Args :
-            arg_mongo_client_instance(MongoClient) : 저장하려는 MongoDB의 pymongo MongoClient 객체 
-            arg_database_name(str) : 저장하려는 MongoDB의 database name
-            arg_collection_name(str) : 저장하려는 MongoDB의 collection name
-            arg_api_key_list(list[str]) : Neople Open API 에서 발급된 api key를 원소로 가지는 list
-            arg_max_fame(int) : 조회 하려는 최대 명성
+            arg_mongo_client_instance(MongoClient) : 저장하려는 MongoDB의 pymongo MongoClient 객체  
+            arg_database_name(str) : 저장하려는 MongoDB의 database name  
+            arg_collection_name(str) : 저장하려는 MongoDB의 collection name  
+            arg_api_key_list(list[str]) : Neople Open API 에서 발급된 api key를 원소로 가지는 list  
+            arg_max_fame(int) : 조회 하려는 최대 명성  
     """
     def task_get_request(character_fame_instance, args_queue, data_queue, completed_tasks_count, tasks_to_be_completed_count):
         """
@@ -155,12 +155,12 @@ def store_character_data_to_mongodb(
     """
     character data를 MongoDB에 저장하는 함수
         Args :
-            arg_mongo_client_instance(MongoClient) : 저장하려는 MongoDB의 pymongo MongoClient 객체 
-            arg_database_name(str) : 저장하려는 MongoDB의 database name
-            arg_collection_name(str) : 저장하려는 MongoDB의 collection name
-            arg_api_key_list(list[str]) : Neople Open API 에서 발급된 api key를 원소로 가지는 list
-            arg_pyneople_character_class_list(list) : pyneopl.character 객체를 원소로 가지는 list
-            arg_total_id_list : "server_id character_id"로 이루어진 total_id
+            arg_mongo_client_instance(MongoClient) : 저장하려는 MongoDB의 pymongo MongoClient 객체   
+            arg_database_name(str) : 저장하려는 MongoDB의 database name  
+            arg_collection_name(str) : 저장하려는 MongoDB의 collection name  
+            arg_api_key_list(list[str]) : Neople Open API 에서 발급된 api key를 원소로 가지는 list  
+            arg_pyneople_character_class_list(list) : pyneopl.character 객체를 원소로 가지는 list  
+            arg_total_id_list : "server_id character_id"로 이루어진 total_id  
     """    
     def task_get_request(pyneople_instance_list, args_queue, data_queue, completed_tasks_count, tasks_to_be_completed_count, fail_queue):
         while completed_tasks_count.value != tasks_to_be_completed_count:
@@ -233,14 +233,14 @@ def store_timeline_data_to_mongodb(
     """
     timeline data를 MongoDB에 저장하는 함수
         Args :
-            arg_mongo_client_instance(MongoClient) : 저장하려는 MongoDB의 pymongo MongoClient 객체 
-            arg_database_name(str) : 저장하려는 MongoDB의 database name
-            arg_collection_name(str) : 저장하려는 MongoDB의 collection name
-            arg_api_key_list(list[str]) : Neople Open API 에서 발급된 api key를 원소로 가지는 list
-            arg_end_time(str) : 타임라인 데이터 마지막 수집 시간 ex) "2024-05-02 05:30",
-            arg_start_time(str) : 타임라인 데이터 첫 수집 시간 ex) "2024-04-25 12:00",            
-            arg_code(int) : 수집하고 싶은 타임라인 코드 ex)201, 202 참조) https://developers.neople.co.kr/contents/guide/pages/all
-            arg_total_id_list : "server_id character_id"로 이루어진 total_id
+            arg_mongo_client_instance(MongoClient) : 저장하려는 MongoDB의 pymongo MongoClient 객체  
+            arg_database_name(str) : 저장하려는 MongoDB의 database name  
+            arg_collection_name(str) : 저장하려는 MongoDB의 collection name  
+            arg_api_key_list(list[str]) : Neople Open API 에서 발급된 api key를 원소로 가지는 list  
+            arg_end_time(str) : 타임라인 데이터 마지막 수집 시간 ex) "2024-05-02 05:30",  
+            arg_start_time(str) : 타임라인 데이터 첫 수집 시간 ex) "2024-04-25 12:00",              
+            arg_code(int) : 수집하고 싶은 타임라인 코드 ex)201, 202 참조) https://developers.neople.co.kr/contents/guide/pages/all  
+            arg_total_id_list : "server_id character_id"로 이루어진 total_id  
     """     
     def task_get_request(pyneople_instance, args_queue, data_queue, completed_tasks_count, tasks_to_be_completed_count, fail_queue):
         while completed_tasks_count.value != tasks_to_be_completed_count:
@@ -340,9 +340,9 @@ class PostgreSQLConnecter():
         """
         PostgreSQLConnecter.create_table 메소드의 arg_columns 매개변수로 사용될 값을 반환하는 함수
             Args:
-                arg_pyneople_instance : pyneople instance 혹은 pyneople instance를 원소로 가지는 list
-                arg_data_type(list) : VARCHAR(32) PRIMARY KEY 같은 제약 조건을 담은 list
-                arg_constraint_options(str) : 해당 테이블의 제약조건 ex) "PRIMARY KEY(characterid, server)"
+                arg_pyneople_instance : pyneople instance 혹은 pyneople instance를 원소로 가지는 list  
+                arg_data_type(list) : VARCHAR(32) PRIMARY KEY 같은 제약 조건을 담은 list  
+                arg_constraint_options(str) : 해당 테이블의 제약조건 ex) "PRIMARY KEY(characterid, server)"  
         """
         colnames = []
         if isinstance(arg_pyneople_instance ,list):
@@ -413,14 +413,14 @@ class PostgreSQLConnecter():
         """
         table에 데이터를 삽입하는 함수
             Args:
-                arg_cursor(cursor) : psycopg2 cursor 객체
-                arg_table_name(str) : 데이터를 삽입하려는 table name
-                arg_columns(list) : 데이터를 삽입하려는 column들의 list ex) ["characterId", "serverId", "jobName"]
-                arg_data(list) : ex [('f2baddf4a296490a4d463cb512a83789', 'anton', '총검사'),
-                                    ('87cbd3e834ae89c567a22a98bb2c9911', 'anton', '총검사')]
-                                    or
-                                    [('f2baddf4a296490a4d463cb512a83789', 'anton', '총검사')] <- data 1개여도 이런식으로 삽입
-                arg_ignore_duplication(bool) : {True : 중복되는게 있으면 해당 항목만 넘어가고 계속 저장해라, False : 중복되는게 있으면 에러를 발생시켜라}
+                arg_cursor(cursor) : psycopg2 cursor 객체  
+                arg_table_name(str) : 데이터를 삽입하려는 table name  
+                arg_columns(list) : 데이터를 삽입하려는 column들의 list ex) ["characterId", "serverId", "jobName"]  
+                arg_data(list) : ex [('f2baddf4a296490a4d463cb512a83789', 'anton', '총검사'),  
+                                    ('87cbd3e834ae89c567a22a98bb2c9911', 'anton', '총검사')]  
+                                    or  
+                                    [('f2baddf4a296490a4d463cb512a83789', 'anton', '총검사')] <- data 1개여도 이런식으로 삽입  
+                arg_ignore_duplication(bool) : {True : 중복되는게 있으면 해당 항목만 넘어가고 계속 저장해라, False : 중복되는게 있으면 에러를 발생시켜라}  
 
         주의사항 : 해당 함수는 connectiom.commit() 을 실행하지 않음
         """
@@ -443,13 +443,13 @@ def mongodb_to_postgresql(arg_postgresql_connecter : PostgreSQLConnecter,
     """
     MomgoDB collection 에 저장된 데이터를 Postgresql로 전처리 후 batch_size씩 저장하는 함수
         Args :
-            arg_postgresql_connecter(PostgreSQLConnecter) : pyneople database connecter
-            arg_postgresql_table_name(str) :  저장하려는 PostgreSQL table name
-            arg_mongo_client(MongoClient) : pymongo 의 MongoClient 객체
-            arg_mongo_database_name(str) : MongoDB의 database name
-            arg_mongo_collection_name(str) : MongoDB의 collection name
-            arg_preprocess_function(Callable) : 전처리 함수(input으로 MongoDB의 document가 들어가며 tuple 또는 tuple로 이루어진 list를 반환해야 한다.)
-            arg_batch_size(int) : 한번에 조회, 저장하는 document 개수
+            arg_postgresql_connecter(PostgreSQLConnecter) : pyneople database connecter  
+            arg_postgresql_table_name(str) :  저장하려는 PostgreSQL table name  
+            arg_mongo_client(MongoClient) : pymongo 의 MongoClient 객체  
+            arg_mongo_database_name(str) : MongoDB의 database name  
+            arg_mongo_collection_name(str) : MongoDB의 collection name  
+            arg_preprocess_function(Callable) : 전처리 함수(input으로 MongoDB의 document가 들어가며 tuple 또는 tuple로 이루어진 list를 반환해야 한다.)  
+            arg_batch_size(int) : 한번에 조회, 저장하는 document 개수  
     """
     postgresql_columns = arg_postgresql_connecter.get_column_names(arg_postgresql_table_name)
     postgresql_cursor = arg_postgresql_connecter.connection.cursor()

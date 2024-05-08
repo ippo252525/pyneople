@@ -1,5 +1,5 @@
 """
-functions
+pyneople에서 사용되는 함수와 클래스입니다.
 """
 
 import time
