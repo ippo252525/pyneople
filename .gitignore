@@ -2,5 +2,3 @@ tests/
 pytest_cache/
 __pycache__
 *.ipynb
-labo.py
-mmu.py

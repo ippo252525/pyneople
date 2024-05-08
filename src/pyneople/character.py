@@ -388,13 +388,7 @@ class Weapon(Equipment):
         super().get_equipment_data(arg_equipment_dict)
         for sub_attribute in Weapon.sub_attribute_list:
             getattr(self, sub_attribute).get_info_data(arg_equipment_dict.get(WEAPON_NAME[sub_attribute], dict()))
-            # if sub_attribute == 'bakal_info':
-            #     self.bakal_info.get_bakal_info_data(arg_equipment_dict.get(WEAPON_NAME[sub_attribute], dict())) # 바칼 무기 융합
-            # elif sub_attribute == 'asrahan_info':
-            #     self.asrahan_info.get_asrahan_info_data(arg_equipment_dict.get("asrahanOption", dict()))
-            # else:
-            #     pass    
-
+            
 class Equipments(PyNeopleAttributeSetter):
     """
     Neople Open API 06. 캐릭터 '장착 장비' 조회
@@ -466,12 +460,6 @@ class Avatar(PyNeopleAttributeSetter):
             else:
                 setattr(self, sub_attribute, None)
 
-        # self.item_name = None       # 아바타 이름
-        # self.item_rarity = None     # 아바타 레어도
-        # self.option_ability = None  # 아바타 옵션
-        # self.emblem_1 = None        # 엠블렘1 옵션
-        # self.emblem_2 = None        # 엠블렘2 옵션
-
     def get_avatar_data(self, arg_avatar_dict):
         for sub_attribute in Avatar.sub_attribute_list:
             if sub_attribute == 'emblems':
@@ -479,9 +467,7 @@ class Avatar(PyNeopleAttributeSetter):
                     setattr(self, f"{sub_attribute}_{emblem.get('slotNo')}", emblem.get('itemName'))
             else:    
                 setattr(self, sub_attribute, arg_avatar_dict.get(AVATAR_NAME[sub_attribute]))
-        # self.item_name = arg_avatar_dict.get("itemName")
-        # self.item_rarity = arg_avatar_dict.get("itemRarity")
-        # self.option_ability = arg_avatar_dict.get("optionAbility")
+
 
 
 
@@ -499,12 +485,7 @@ class PlatinumAvatar(Avatar):
                 setattr(self, sub_attribute, None)    
             else:
                 setattr(self, sub_attribute, None)
-    # @classmethod
-    # def set_sub_attributes(cls, new_attribute_list : list[str]):
-    #     for new_attribute in new_attribute_list:
-    #         if not new_attribute in cls.sub_attribute_list:
-    #             raise ValueError("사용할 수 없는 하위 속성입니다.")         
-    #     cls.sub_attribute_list = new_attribute_list
+
     def get_avatar_data(self, arg_avatar_dict):
         
         for sub_attribute in PlatinumAvatar.sub_attribute_list:
@@ -525,12 +506,6 @@ class Avatars(PyNeopleAttributeSetter):
     """       
     default_sub_attribute_list = AVATAR_LIST
     sub_attribute_list = default_sub_attribute_list
-    def __init__(self, arg_api_key: str):
-        super().__init__(arg_api_key)
-    
-    @classmethod
-    def set_sub_attributes(cls, new_attribute_list : list[str]):
-        cls.sub_attribute_list = new_attribute_list
 
     def get_data(self, arg_server_id: str, arg_character_id : str):    
         """
@@ -567,9 +542,6 @@ class Creature(PyNeople):
     """
     Neople Open API 08. 캐릭터 '장착 크리쳐' 조회
     """
-    
-    def __init__(self, arg_api_key: str):
-        super().__init__(arg_api_key)
         
     def get_data(self, arg_server_id : str, arg_character_id : str):
         """
@@ -595,9 +567,6 @@ class Flag(PyNeople):
     """
     Neople Open API 09. 캐릭터 '장착 휘장' 조회
     """
-
-    def __init__(self, arg_api_key: str):
-        super().__init__(arg_api_key)
     
     def get_data(self, arg_server_id : str, arg_character_id : str):
         """
@@ -645,8 +614,6 @@ class Talismans(PyNeople):
     """
     Neople Open API 10. 캐릭터 '장착 탈리스만' 조회
     """ 
-    def __init__(self, arg_api_key: str):
-        super().__init__(arg_api_key)
 
     def get_data(self, arg_server_id : str, arg_character_id : str):
         """
@@ -675,9 +642,6 @@ class EquipmentTrait(PyNeople):
     """
     Neople Open API 11. 캐릭터 '장비 특성' 조회
     """ 
-
-    def __init__(self, arg_api_key: str):
-        super().__init__(arg_api_key)
 
     def get_data(self, arg_server_id : str, arg_character_id : str):
         """
@@ -716,9 +680,6 @@ class SkillStyle(PyNeople):
     """
     Neople Open API 12. 캐릭터 '스킬 스타일' 조회
     """ 
-
-    def __init__(self, arg_api_key: str):
-        super().__init__(arg_api_key)
 
     def get_data(self, arg_server_id : str, arg_character_id : str):
         """
@@ -778,9 +739,6 @@ class Buff(PyNeople):
     Neople Open API 14. 캐릭터 "버프 스킬 강화 장착 아바타" 조회
     Neople Open API 15. 캐릭터 "버프 스킬 강화 장착 크리쳐" 조회
     """
-
-    def __init__(self, arg_api_key: str):
-        super().__init__(arg_api_key)
          
     def get_data(self, arg_server_id : str, arg_character_id : str):
         """
@@ -847,10 +805,8 @@ class Buff(PyNeople):
             if arg_buff_avatar_data.get("avatar"):
                 for buff_avatar in arg_buff_avatar_data.get("avatar"):
                     if buff_avatar.get("slotId").lower() in PLATINUM_AVATAR_LIST:
-                        # setattr(self, f'avatar_{buff_avatar.get("slotId").lower()}', BuffPlatimun())
                         getattr(self, f'avatar_{buff_avatar.get("slotId").lower()}').get_buff_avatar_data(buff_avatar)
                     else:
-                        # setattr(self, f'avatar_{buff_avatar.get("slotId").lower()}', BuffAvatar())
                         getattr(self, f'avatar_{buff_avatar.get("slotId").lower()}').get_buff_avatar_data(buff_avatar)
 
         # 버프 강화 크리쳐
@@ -864,10 +820,6 @@ class CharacterFame(PyNeople):
     """
     Neople Open API 16. 캐릭터 명성 검색
     """    
-
-    def __init__(self, arg_api_key: str):
-        super().__init__(arg_api_key)
-
     def get_data(self, arg_min_fame : int, 
                   arg_max_fame : int,
                   arg_job_id : str = "",
