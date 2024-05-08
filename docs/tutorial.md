@@ -15,13 +15,14 @@ print(character_search.server_id)
 print(character_search.character_name)
 ```
 
-## Step 0. 시작에 앞서
+## Tutorial
+### Step 0. 시작에 앞서
 #### Neople Open API 가입 후 api key 확보하기  
 1. [Neople Open API](https://developers.neople.co.kr/) 접속 후 로그인
 2. 우측 상단의 마이페이지 클릭
 3. 어플리케이션 등록
 
-## Step 1. 캐릭터 데이터 가져오기
+### Step 1. 캐릭터 데이터 가져오기
 pyneople.character 내부의 클래스를 이용해서 데이터를 가져옵니다.
 ```python
 from pyneople.character import CharacterInformation
@@ -36,7 +37,7 @@ data = character_info.get_data("cain", "d018e5f7e7519e34b8ef21db0c40fd98")
 print(data)
 ```
 
-## Step 2. 캐릭터 데이터 정리하기
+### Step 2. 캐릭터 데이터 정리하기
 객체의 하위 속성을 생성하도록 데이터를 정리합니다.
 
 원하는 데이터만 하위 속성으로 생성하는 클래스 메서드를 가지는 클래스는 다음과 같습니다.
@@ -61,7 +62,7 @@ character_info_dict = dict(zip(attr_flatten(character_info), value_flatten(chara
 print(character_info_dict)
 ```
 
-## Step 3. 원하는 데이터만 정리하기
+### Step 3. 원하는 데이터만 정리하기
 다음과 같은 클래스만 사용할 수 있습니다.
 CharacterSearch, CharacterInformation, Status, GrowInfo, BaseEquipment, Equipment, Weapon, Equipments, Avatar, PlatinumAvatar, Avatars
 
@@ -82,7 +83,7 @@ character_info.parse_data(data)
 print(attr_flatten(character_info))
 ```
 
-## Step 4. MongoDB로 데이터 저장하기
+### Step 4. MongoDB로 데이터 저장하기
 pymongo의 MongoClient객체를 확보 후 진행해야 합니다.
 ```python
 from pyneople.database_connecter import store_fame_data_to_mongodb
@@ -95,7 +96,7 @@ store_fame_data_to_mongodb(mongo_client, 'dnf', 'fame_tb_20240508', [api_key])
 다만 CPU의 코어 수에 따라 데이터 수집 속도 향상이 이루어 질 수 없는 경우도 생깁니다.  
 CPU 코어수 이상의 api key를 사용하는 것을 권장하지 않습니다.
 
-## Step 5. PostgreSQL 조작하기
+### Step 5. PostgreSQL 조작하기
 pyneople.database_connecter에서 PostgreSQL 조작을 할 수 있습니다.
 ```python
 from pyneople.database_connecter import PostgreSQLConnecter
@@ -158,7 +159,7 @@ pg_connecter.insert_into_table(
     )
 ```
 
-## Step 6. MongoDB에 저장된 데이터를 PostgreSQL로 이동하기
+### Step 6. MongoDB에 저장된 데이터를 PostgreSQL로 이동하기
 ```python
 from pyneople.database_connecter import mongodb_to_postgresql
 # 전처리 함수를 미리 정의해야 합니다
