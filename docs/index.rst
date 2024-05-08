@@ -4,14 +4,14 @@
    contain the root `toctree` directive.
 
 Neople Open API wrapper pyneople documentation
-====================================
+===============================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
    
-   pyneople
    tutorial.md
+   pyneople
 
 Indices and tables
 ==================
