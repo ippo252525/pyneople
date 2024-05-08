@@ -1,16 +1,5 @@
-pyneople package
+pyneople
 ================
-
-Submodules
-----------
-
-pyneople.METADATA module
-------------------------
-
-.. automodule:: pyneople.METADATA
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 pyneople.character module
 -------------------------
@@ -36,10 +25,3 @@ pyneople.functions module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: pyneople
-   :members:
-   :undoc-members:
-   :show-inheritance:
