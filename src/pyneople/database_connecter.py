@@ -411,18 +411,13 @@ class PostgreSQLConnecter():
 
     def insert_into_table(self, arg_cursor , arg_table_name : str, arg_columns : list, arg_data : list, arg_ignore_duplication : bool = True):
         """
-        table에 데이터를 삽입하는 함수
+        table에 데이터를 삽입하는 함수, 주의사항 : 해당 함수는 connectiom.commit() 을 실행하지 않음
             Args:
                 arg_cursor(cursor) : psycopg2 cursor 객체  
                 arg_table_name(str) : 데이터를 삽입하려는 table name  
                 arg_columns(list) : 데이터를 삽입하려는 column들의 list ex) ["characterId", "serverId", "jobName"]  
-                arg_data(list) : ex [('f2baddf4a296490a4d463cb512a83789', 'anton', '총검사'),  
-                                    ('87cbd3e834ae89c567a22a98bb2c9911', 'anton', '총검사')]  
-                                    or  
-                                    [('f2baddf4a296490a4d463cb512a83789', 'anton', '총검사')] <- data 1개여도 이런식으로 삽입  
+                arg_data(list) : [('f2baddf4a296490a4d463cb512a83789', 'anton', '총검사')] <- data 1개여도 이런식으로 삽입  
                 arg_ignore_duplication(bool) : {True : 중복되는게 있으면 해당 항목만 넘어가고 계속 저장해라, False : 중복되는게 있으면 에러를 발생시켜라}  
-
-        주의사항 : 해당 함수는 connectiom.commit() 을 실행하지 않음
         """
         insert_query = sql.SQL("INSERT INTO {} ({}) VALUES {}").format(
             sql.Identifier(arg_table_name),

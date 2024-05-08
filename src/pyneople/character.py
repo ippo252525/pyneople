@@ -32,9 +32,9 @@ class PyNeople():
     """
     def __init__(self, arg_api_key : str):
         """
-        클래스 생성 시 Neople Open API key를 입력받는다
-            Args :
-                arg_api_key(str) : Neople Open API key
+        클래스 생성 시 Neople Open API key를 입력받는다  
+            Args :  
+                arg_api_key(str) : Neople Open API key  
         """        
         self._api_key = arg_api_key
 
@@ -65,7 +65,7 @@ class CharacterSearch(PyNeopleAttributeSetter):
         """
         서버 이름과 캐릭터 이름을 검색하면 기본 정보를 반환
             Args : 
-                arg_server_name(str) : 서버 이름  ex) 디레지에, diregie
+                arg_server_name(str) : 서버 이름  ex) 디레지에, diregie  
                 
                 arg_character_name(str) : 캐릭터 이름 ex) 홍길동
         """
@@ -90,7 +90,7 @@ class CharacterSearch(PyNeopleAttributeSetter):
         """
         데이터를 정리해서 하위 속성에 저장
             Args :
-                arg_data(dict) : Neople Open API 를 통해 받은 data
+                arg_data(dict) : Neople Open API 를 통해 받은 data  
                 attribute_list(iterable of str) : 원하는 하위 속성 명
         """
         # 하위 속성에 데이터 할당
@@ -108,7 +108,7 @@ class CharacterInformation(PyNeopleAttributeSetter):
         """
         영문 서버 이름과 캐릭터 ID 를 검색하면 기본 정보를 반환
             Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) diregie
+                arg_server_id(str) : 영문 서버 이름  ex) diregie  
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """    
@@ -121,8 +121,8 @@ class CharacterInformation(PyNeopleAttributeSetter):
         """
         데이터를 정리해서 하위 속성에 저장
             Args :
-                arg_data(dict) : Neople Open API 를 통해 받은 data
-                attribute_list(iterable of str) : 원하는 하위 속성 명
+                arg_data(dict) : Neople Open API 를 통해 받은 data  
+                attribute_list(iterable of str) : 원하는 하위 속성 명  
         """
         # 하위 속성에 데이터 할당
         for attribute_name in CharacterInformation.sub_attribute_list:
@@ -145,21 +145,21 @@ class Timeline(PyNeople):
         """
         서버ID와 캐릭터ID 원하는 수집시간(arg_end_date)을 입력받으면 타임라인데이터를 반환한다.
             Args :
-                arg_server_id(str) : 서버ID ex) cain
+                arg_server_id(str) : 서버ID ex) cain  
                 
-                arg_character_id(str) : 캐릭터ID ex) 80d9189c86147ab9a7b8c1481be85d95
+                arg_character_id(str) : 캐릭터ID ex) 80d9189c86147ab9a7b8c1481be85d95  
                 
-                arg_end_date(str) : 이 시간까지 수집을 한다 ex) 2023-03-03 15:57
+                arg_end_date(str) : 이 시간까지 수집을 한다 ex) 2023-03-03 15:57  
                 
-                arg_last_end_date(str) : 이 시간부터 수집을 한다 ex) 2018-03-03 15:57
+                arg_last_end_date(str) : 이 시간부터 수집을 한다 ex) 2018-03-03 15:57  
                 
-                arg_last_end_data(dict) : 지금까지 수집한 해당 캐릭터의 마지막 타임라인 데이터
+                arg_last_end_data(dict) : 지금까지 수집한 해당 캐릭터의 마지막 타임라인 데이터  
                 
-                arg_limit(int) : 한번 request할 때 수집 할 타임라인 데이터의 개수
+                arg_limit(int) : 한번 request할 때 수집 할 타임라인 데이터의 개수  
                 
-                arg_code(int) : 수집하고 싶은 타임라인 코드 ex)201, 202 참조) https://developers.neople.co.kr/contents/guide/pages/all 
+                arg_code(int) : 수집하고 싶은 타임라인 코드 ex)201, 202 참조) https://developers.neople.co.kr/contents/guide/pages/all  
                 
-                arg_print_log(boolean) : 데이터 수집의 과정의 print 여부
+                arg_print_log(boolean) : 데이터 수집의 과정의 print 여부  
         """
         self._total_id = f"{arg_server_id} {arg_character_id}"
         timeline = []
@@ -209,7 +209,7 @@ class Timeline(PyNeople):
 
 class Status(PyNeopleAttributeSetter):
     """
-    Neople Open API 05. 캐릭터 '능력치 정보' 조회
+    Neople Open API 05. 캐릭터 '능력치 정보' 조회  
     """    
     default_sub_attribute_list = STATUS_NAME.keys()
     sub_attribute_list = default_sub_attribute_list    
@@ -218,9 +218,9 @@ class Status(PyNeopleAttributeSetter):
         """
         캐릭터의 모험단명부터 명성 등 정보를 반환한다
             Args:
-                arg_server_id(str) :  서버 ID
+                arg_server_id(str) :  서버 ID  
                 
-                arg_character_id(str) : 캐릭터 ID
+                arg_character_id(str) : 캐릭터 ID  
         """
         self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/status?apikey={self._api_key}'
@@ -230,7 +230,7 @@ class Status(PyNeopleAttributeSetter):
         """
         데이터를 정리해서 하위 attribute에 저장
             Args :
-                arg_data(dict) : Neople Open API 를 통해 받은 data
+                arg_data(dict) : Neople Open API 를 통해 받은 data  
                 attribute_list(iterable of str) : 원하는 하위 속성 명
         """
         
@@ -284,7 +284,7 @@ class GrowInfo(PyNeopleAttributeSetter):
 
 class BaseEquipment(PyNeopleAttributeSetter):
     """
-    Equipments를 위해 사용되는 Class
+    Equipments를 위해 사용되는 Class  
     가장 기초적인 장비 정보를 담으며 다른 장비에 부모클래스로 이용된다.
     """    
     default_sub_attribute_list = BASE_EQUIPMENT_NAME.keys()
@@ -304,7 +304,7 @@ class BaseEquipment(PyNeopleAttributeSetter):
 
 class Equipment(BaseEquipment):
     """
-    Equipments를 위해 사용되는 Class
+    Equipments를 위해 사용되는 Class  
     """ 
     default_sub_attribute_list = EQUIPMENT_NAME.keys()
     sub_attribute_list = default_sub_attribute_list
@@ -404,7 +404,7 @@ class Equipments(PyNeopleAttributeSetter):
         """
         영문 서버 이름과 캐릭터 ID 를 검색하면 장착 장비 정보를 반환
             Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) diregie
+                arg_server_id(str) : 영문 서버 이름  ex) diregie  
                 
                 arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
         """        
@@ -661,8 +661,7 @@ class EquipmentTrait(PyNeople):
     
     def parse_data(self, arg_data : dict):
         """
-        데이터를 정리해서 하위 attribute에 저장
-        강력한 일격과 명상의 레벨만 확인
+        데이터를 정리해서 하위 attribute에 저장 강력한 일격과 명상의 레벨만 확인
             Args :
                 arg_data(dict) : Neople Open API 를 통해 받은 data
         """
@@ -699,8 +698,7 @@ class SkillStyle(PyNeople):
 
     def parse_data(self, arg_data : dict):
         """
-        데이터를 정리해서 하위 attribute에 저장
-        스킬 코드만 구현 완료 나머지 추후 개발
+        데이터를 정리해서 하위 attribute에 저장 스킬 코드만 구현 완료 나머지 추후 개발
             Args :
                 arg_data(dict) : Neople Open API 를 통해 받은 data
         """        

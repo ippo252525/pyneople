@@ -8,7 +8,7 @@ import requests
 from .METADATA import JOBCLASS
 from .METADATA import SETTINGS
 
-__all__ = ['change_settings', 'get_request', 'jobname_equalize', 'get_job_info', 'system_maintenance', 'NeopleOpenAPIError', 'ServerMaintenanceError', 'value_flatten', 'attr_flatten']
+__all__ = ['change_settings', 'get_request', 'jobname_equalize', 'get_job_info', 'NeopleOpenAPIError', 'ServerMaintenanceError', 'value_flatten', 'attr_flatten']
 
 class NeopleOpenAPIError(Exception):
     """
@@ -73,6 +73,7 @@ def _next(arg_dict : dict, arg_list : list):
 def get_job_info(arg_api_key : str):
     """
     직업 정보를 받아오는 함수
+
     전직명(각성명)을 1차 전직명으로 통일시키는 jobname_equalize 함수에 매개변수로 사용되는 객체를 반환함
         Args :
             arg_api_key(str) : Neople Open API key
@@ -113,26 +114,6 @@ def jobname_equalize(arg_job_name : str, arg_job_grow_name : str ,arg_job_info :
                 break
         output = output[0]
     return output
-
-def system_maintenance(arg_api_key: str):
-    """
-    현재 Neople Open API 서버가 점검중인지 확인하는 함수\\
-    서버가 점검중이면 TRUE를 반환한다
-        Args :
-            arg_api_key : Neople Open API key
-        Retruns : 
-            boolean
-    """
-    try:
-        data = requests.get(f"https://api.neople.co.kr/df/servers?apikey={arg_api_key}", timeout = SETTINGS['request_time_out'])
-        time.sleep(SETTINGS['request_time_sleep'])
-        data = json.loads(data.text)
-    except:
-        return False    
-    if (list(data.keys())[0] == 'error') and (data['error']['status'] == 503): 
-        return True
-    else:
-        return False
 
 def explain_enchant(arg_enchant_dict : dict):
     """
