@@ -1,8 +1,6 @@
 pyneople
 ================
 
-.. include:: tutorial.md
-
 pyneople.character module
 -------------------------
 

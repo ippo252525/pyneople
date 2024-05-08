@@ -11,6 +11,7 @@ Neople Open API wrapper pyneople documentation
    :caption: Contents:
    
    pyneople
+   tutorial.md
 
 Indices and tables
 ==================
