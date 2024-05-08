@@ -663,7 +663,7 @@ class EquipmentTrait(PyNeople):
         """
         데이터를 정리해서 하위 attribute에 저장 강력한 일격과 명상의 레벨만 확인
             Args :
-                arg_data(dict) : Neople Open API 를 통해 받은 data
+                arg_data(dict) : Neople Open API 를 통해 받은 data  
         """
 
         self.total_point = arg_data.get("equipmentTrait", dict()).get("total", dict()).get("point")
@@ -700,7 +700,7 @@ class SkillStyle(PyNeople):
         """
         데이터를 정리해서 하위 attribute에 저장 스킬 코드만 구현 완료 나머지 추후 개발
             Args :
-                arg_data(dict) : Neople Open API 를 통해 받은 data
+                arg_data(dict) : Neople Open API 를 통해 받은 data  
         """        
 
         self.skill_code = arg_data.get("skill", dict()).get("hash")
