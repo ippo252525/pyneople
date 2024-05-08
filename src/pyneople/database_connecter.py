@@ -1,3 +1,7 @@
+"""
+database connecter
+"""
+
 from .functions import get_request, ServerMaintenanceError, attr_flatten
 from .character import CharacterFame, CharacterSearch, Timeline
 from multiprocessing import Process, Queue, Value

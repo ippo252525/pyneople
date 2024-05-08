@@ -1,3 +1,7 @@
+"""
+character
+"""
+
 import datetime
 import urllib.parse
 from typing import Iterable, Union
