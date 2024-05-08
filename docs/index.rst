@@ -10,7 +10,7 @@ Neople Open API wrapper pyneople documentation
    :maxdepth: 2
    :caption: Contents:
    
-   tutorial.md
+   ../README.md
    pyneople
 
 Indices and tables

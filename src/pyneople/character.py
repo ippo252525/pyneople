@@ -65,7 +65,7 @@ class CharacterSearch(PyNeopleAttributeSetter):
         """
         서버 이름과 캐릭터 이름을 검색하면 기본 정보를 반환
             Args : 
-                arg_server_name(str) : 서버 이름  ex) 디레지에, diregie  
+                arg_server_name(str) : 서버 이름  ex) 디레지에, cain  
                 
                 arg_character_name(str) : 캐릭터 이름 ex) 홍길동
         """
@@ -108,9 +108,9 @@ class CharacterInformation(PyNeopleAttributeSetter):
         """
         영문 서버 이름과 캐릭터 ID 를 검색하면 기본 정보를 반환
             Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) diregie  
+                arg_server_id(str) : 영문 서버 이름  ex) cain  
                 
-                arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
+                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
         """    
         self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}?apikey={self._api_key}"
@@ -147,7 +147,7 @@ class Timeline(PyNeople):
             Args :
                 arg_server_id(str) : 서버ID ex) cain  
                 
-                arg_character_id(str) : 캐릭터ID ex) 80d9189c86147ab9a7b8c1481be85d95  
+                arg_character_id(str) : 캐릭터ID ex) 82d9189c86147ab9a7b8c1481be85d95  
                 
                 arg_end_date(str) : 이 시간까지 수집을 한다 ex) 2023-03-03 15:57  
                 
@@ -404,9 +404,9 @@ class Equipments(PyNeopleAttributeSetter):
         """
         영문 서버 이름과 캐릭터 ID 를 검색하면 장착 장비 정보를 반환
             Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) diregie  
+                arg_server_id(str) : 영문 서버 이름  ex) cain  
                 
-                arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
+                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
         """        
         self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/equipment?apikey={self._api_key}'
@@ -515,9 +515,9 @@ class Avatars(PyNeopleAttributeSetter):
         """
         영문 서버 이름과 캐릭터 ID 를 검색하면 장착 아바타 정보를 반환
             Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) diregie
+                arg_server_id(str) : 영문 서버 이름  ex) cain
                 
-                arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
+                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
         """        
         self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/avatar?apikey={self._api_key}'
@@ -551,9 +551,9 @@ class Creature(PyNeople):
         """
         영문 서버 이름과 캐릭터 ID 를 검색하면 장착 크리쳐 정보를 반환
             Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) diregie
+                arg_server_id(str) : 영문 서버 이름  ex) cain
                 
-                arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
+                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
         """
         self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/creature?apikey={self._api_key}"
@@ -576,9 +576,9 @@ class Flag(PyNeople):
         """
         영문 서버 이름과 캐릭터 ID 를 검색하면 장착 휘장 정보를 반환
             Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) diregie
+                arg_server_id(str) : 영문 서버 이름  ex) cain
                 
-                arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
+                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
         """        
         self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/flag?apikey={self._api_key}"
@@ -623,9 +623,9 @@ class Talismans(PyNeople):
         """
         영문 서버 이름과 캐릭터 ID 를 검색하면 장착 탈리스만 정보를 반환
             Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) diregie
+                arg_server_id(str) : 영문 서버 이름  ex) cain
                 
-                arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
+                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
         """                
         self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/talisman?apikey={self._api_key}"         
@@ -651,9 +651,9 @@ class EquipmentTrait(PyNeople):
         """
         영문 서버 이름과 캐릭터 ID 를 검색하면 장비 특성 정보를 반환
             Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) diregie
+                arg_server_id(str) : 영문 서버 이름  ex) cain
                 
-                arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
+                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
         """                
         self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/equipment-trait?apikey={self._api_key}"
@@ -688,9 +688,9 @@ class SkillStyle(PyNeople):
         """
         영문 서버 이름과 캐릭터 ID 를 검색하면 스킬 스타일 정보를 반환
             Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) diregie
+                arg_server_id(str) : 영문 서버 이름  ex) cain
                 
-                arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
+                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
         """                
         self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/style?apikey={self._api_key}"
@@ -746,9 +746,9 @@ class Buff(PyNeople):
         """
         영문 서버 이름과 캐릭터 ID 를 검색하면 버프 강화(장비, 아바타, 크리쳐) 정보를 반환
             Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) diregie
+                arg_server_id(str) : 영문 서버 이름  ex) cain
                 
-                arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95
+                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
         """   
         self._total_id = f"{arg_server_id} {arg_character_id}"
         buff_info_dict = {}     
