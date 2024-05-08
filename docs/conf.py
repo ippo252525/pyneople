@@ -5,9 +5,7 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-import os
-import sys
-sys.path.insert(0, os.path.abspath('../..'))
+
 project = 'pyneople'
 copyright = '2024, ippo252525'
 author = 'ippo252525'
@@ -19,7 +17,7 @@ release = '0.3'
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
 
 templates_path = ['_templates']
-exclude_patterns = []
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 language = 'ko'
 
