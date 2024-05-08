@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ko" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyneople package &mdash; pyneople 0.3 문서</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=63d2165a"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=b5f768d8"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="색인" href="genindex.html" />
+    <link rel="search" title="검색" href="search.html" />
+    <link rel="prev" title="pyneople" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyneople
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pyneople</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pyneople package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pyneople.METADATA">pyneople.METADATA module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pyneople.character">pyneople.character module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.character.Avatars"><code class="docutils literal notranslate"><span class="pre">Avatars</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.character.Buff"><code class="docutils literal notranslate"><span class="pre">Buff</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.character.CharacterFame"><code class="docutils literal notranslate"><span class="pre">CharacterFame</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.character.CharacterInformation"><code class="docutils literal notranslate"><span class="pre">CharacterInformation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.character.CharacterSearch"><code class="docutils literal notranslate"><span class="pre">CharacterSearch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.character.Creature"><code class="docutils literal notranslate"><span class="pre">Creature</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.character.EquipmentTrait"><code class="docutils literal notranslate"><span class="pre">EquipmentTrait</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.character.Equipments"><code class="docutils literal notranslate"><span class="pre">Equipments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.character.Flag"><code class="docutils literal notranslate"><span class="pre">Flag</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.character.SkillStyle"><code class="docutils literal notranslate"><span class="pre">SkillStyle</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.character.Status"><code class="docutils literal notranslate"><span class="pre">Status</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.character.Talismans"><code class="docutils literal notranslate"><span class="pre">Talismans</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.character.Timeline"><code class="docutils literal notranslate"><span class="pre">Timeline</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pyneople.database_connecter">pyneople.database_connecter module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.database_connecter.PostgreSQLConnecter"><code class="docutils literal notranslate"><span class="pre">PostgreSQLConnecter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.database_connecter.mongodb_to_postgresql"><code class="docutils literal notranslate"><span class="pre">mongodb_to_postgresql()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.database_connecter.store_character_data_to_mongodb"><code class="docutils literal notranslate"><span class="pre">store_character_data_to_mongodb()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.database_connecter.store_fame_data_to_mongodb"><code class="docutils literal notranslate"><span class="pre">store_fame_data_to_mongodb()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.database_connecter.store_timeline_data_to_mongodb"><code class="docutils literal notranslate"><span class="pre">store_timeline_data_to_mongodb()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pyneople.functions">pyneople.functions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.functions.NeopleOpenAPIError"><code class="docutils literal notranslate"><span class="pre">NeopleOpenAPIError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.functions.ServerMaintenanceError"><code class="docutils literal notranslate"><span class="pre">ServerMaintenanceError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.functions.attr_flatten"><code class="docutils literal notranslate"><span class="pre">attr_flatten()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.functions.change_settings"><code class="docutils literal notranslate"><span class="pre">change_settings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.functions.get_job_info"><code class="docutils literal notranslate"><span class="pre">get_job_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.functions.get_request"><code class="docutils literal notranslate"><span class="pre">get_request()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.functions.jobname_equalize"><code class="docutils literal notranslate"><span class="pre">jobname_equalize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyneople.functions.value_flatten"><code class="docutils literal notranslate"><span class="pre">value_flatten()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pyneople">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyneople</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pyneople</a></li>
+      <li class="breadcrumb-item active">pyneople package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyneople.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pyneople-package">
+<h1>pyneople package<a class="headerlink" href="#pyneople-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pyneople.METADATA">
+<span id="pyneople-metadata-module"></span><h2>pyneople.METADATA module<a class="headerlink" href="#module-pyneople.METADATA" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pyneople.character">
+<span id="pyneople-character-module"></span><h2>pyneople.character module<a class="headerlink" href="#module-pyneople.character" title="Link to this heading"></a></h2>
+<p>Neople Open API 에서 Character를 기반으로 한 정보를 다루는 모듈입니다.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.character.Avatars">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.character.</span></span><span class="sig-name descname"><span class="pre">Avatars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Avatars" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyNeopleAttributeSetter</span></code></p>
+<p>Neople Open API 07. 캐릭터 ‘장착 아바타’ 조회</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyneople.character.Avatars.default_sub_attribute_list">
+<span class="sig-name descname"><span class="pre">default_sub_attribute_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['headgear',</span> <span class="pre">'hair',</span> <span class="pre">'face',</span> <span class="pre">'jacket',</span> <span class="pre">'pants',</span> <span class="pre">'shoes',</span> <span class="pre">'breast',</span> <span class="pre">'waist',</span> <span class="pre">'skin',</span> <span class="pre">'aurora',</span> <span class="pre">'weapon']</span></em><a class="headerlink" href="#pyneople.character.Avatars.default_sub_attribute_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Avatars.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_server_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_character_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Avatars.get_data" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>영문 서버 이름과 캐릭터 ID 를 검색하면 장착 아바타 정보를 반환</dt><dd><dl>
+<dt>Args :</dt><dd><p>arg_server_id(str) : 영문 서버 이름  ex) diregie</p>
+<p>arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Avatars.parse_data">
+<span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Avatars.parse_data" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>데이터를 정리해서 하위 attribute에 저장</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_data(dict) : Neople Open API 를 통해 받은 data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyneople.character.Avatars.sub_attribute_list">
+<span class="sig-name descname"><span class="pre">sub_attribute_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['headgear',</span> <span class="pre">'hair',</span> <span class="pre">'face',</span> <span class="pre">'jacket',</span> <span class="pre">'pants',</span> <span class="pre">'shoes',</span> <span class="pre">'breast',</span> <span class="pre">'waist',</span> <span class="pre">'skin',</span> <span class="pre">'aurora',</span> <span class="pre">'weapon']</span></em><a class="headerlink" href="#pyneople.character.Avatars.sub_attribute_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.character.Buff">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.character.</span></span><span class="sig-name descname"><span class="pre">Buff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Buff" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyNeople</span></code></p>
+<p>Neople Open API 13. 캐릭터 “버프 스킬 강화 장착 장비” 조회
+Neople Open API 14. 캐릭터 “버프 스킬 강화 장착 아바타” 조회
+Neople Open API 15. 캐릭터 “버프 스킬 강화 장착 크리쳐” 조회</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Buff.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_server_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_character_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Buff.get_data" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>영문 서버 이름과 캐릭터 ID 를 검색하면 버프 강화(장비, 아바타, 크리쳐) 정보를 반환</dt><dd><dl>
+<dt>Args :</dt><dd><p>arg_server_id(str) : 영문 서버 이름  ex) diregie</p>
+<p>arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Buff.parse_data">
+<span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Buff.parse_data" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>데이터를 정리해서 하위 attribute에 저장</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_data(dict) : Neople Open API 를 통해 받은 data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.character.CharacterFame">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.character.</span></span><span class="sig-name descname"><span class="pre">CharacterFame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.CharacterFame" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyNeople</span></code></p>
+<p>Neople Open API 16. 캐릭터 명성 검색</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.CharacterFame.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_min_fame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_max_fame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_job_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_job_grow_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_is_all_job_grow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_is_buff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_server_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.CharacterFame.get_data" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>해당 명성 구간의 캐릭터 정보를 원소로 가지는 list를 반환함</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_min_fame(int) : 명성 구간 최소값(최대 명성과의 차이가 2000이상이면 최대명성 - 2000 으로 입력됨)
+arg_max_fame(int) : 명성 구간 최대값
+arg_job_id(str) : 캐릭터 직업 고유 코드
+arg_job_grow_id(str) : 캐릭터 전직 직업 고유 코드(jobId 필요)
+arg_is_all_job_grow(bool) : jobGrowId 입력 시 연계되는 전체 전직 포함 조회 ex) 검성 -&gt; 웨펀마스터, 검성, 검신, 眞웨펀마스터
+arg_is_buff(bool) : 버퍼만 조회(true), 딜러만 조회(false), 전체 조회(미 입력)
+arg_server_id(str) : 서버 아이디
+arg_limit(int) : 반환 Row 수</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.character.CharacterInformation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.character.</span></span><span class="sig-name descname"><span class="pre">CharacterInformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.CharacterInformation" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyNeopleAttributeSetter</span></code></p>
+<p>Neople Open API 03. 캐릭터 ‘기본정보’ 조회</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyneople.character.CharacterInformation.default_sub_attribute_list">
+<span class="sig-name descname"><span class="pre">default_sub_attribute_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">dict_keys(['character_id',</span> <span class="pre">'character_name',</span> <span class="pre">'level',</span> <span class="pre">'job_name',</span> <span class="pre">'job_grow_name',</span> <span class="pre">'adventure_name',</span> <span class="pre">'guild_id',</span> <span class="pre">'guild_name'])</span></em><a class="headerlink" href="#pyneople.character.CharacterInformation.default_sub_attribute_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.CharacterInformation.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_server_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_character_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.CharacterInformation.get_data" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>영문 서버 이름과 캐릭터 ID 를 검색하면 기본 정보를 반환</dt><dd><dl>
+<dt>Args :</dt><dd><p>arg_server_id(str) : 영문 서버 이름  ex) diregie</p>
+<p>arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.CharacterInformation.parse_data">
+<span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.CharacterInformation.parse_data" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>데이터를 정리해서 하위 속성에 저장</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_data(dict) : Neople Open API 를 통해 받은 data
+attribute_list(iterable of str) : 원하는 하위 속성 명</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyneople.character.CharacterInformation.sub_attribute_list">
+<span class="sig-name descname"><span class="pre">sub_attribute_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">dict_keys(['character_id',</span> <span class="pre">'character_name',</span> <span class="pre">'level',</span> <span class="pre">'job_name',</span> <span class="pre">'job_grow_name',</span> <span class="pre">'adventure_name',</span> <span class="pre">'guild_id',</span> <span class="pre">'guild_name'])</span></em><a class="headerlink" href="#pyneople.character.CharacterInformation.sub_attribute_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.character.CharacterSearch">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.character.</span></span><span class="sig-name descname"><span class="pre">CharacterSearch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.CharacterSearch" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyNeopleAttributeSetter</span></code></p>
+<p>Neople Open API 02. 캐릭터 검색</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyneople.character.CharacterSearch.default_sub_attribute_list">
+<span class="sig-name descname"><span class="pre">default_sub_attribute_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">dict_keys(['server_id',</span> <span class="pre">'character_id',</span> <span class="pre">'character_name',</span> <span class="pre">'level',</span> <span class="pre">'job_id',</span> <span class="pre">'job_grow_id',</span> <span class="pre">'job_name',</span> <span class="pre">'job_grow_name',</span> <span class="pre">'fame'])</span></em><a class="headerlink" href="#pyneople.character.CharacterSearch.default_sub_attribute_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.CharacterSearch.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_server_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_character_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.CharacterSearch.get_data" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>서버 이름과 캐릭터 이름을 검색하면 기본 정보를 반환</dt><dd><dl>
+<dt>Args :</dt><dd><p>arg_server_name(str) : 서버 이름  ex) 디레지에, diregie</p>
+<p>arg_character_name(str) : 캐릭터 이름 ex) 홍길동</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.CharacterSearch.parse_data">
+<span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.CharacterSearch.parse_data" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>데이터를 정리해서 하위 속성에 저장</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_data(dict) : Neople Open API 를 통해 받은 data
+attribute_list(iterable of str) : 원하는 하위 속성 명</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyneople.character.CharacterSearch.sub_attribute_list">
+<span class="sig-name descname"><span class="pre">sub_attribute_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">dict_keys(['server_id',</span> <span class="pre">'character_id',</span> <span class="pre">'character_name',</span> <span class="pre">'level',</span> <span class="pre">'job_id',</span> <span class="pre">'job_grow_id',</span> <span class="pre">'job_name',</span> <span class="pre">'job_grow_name',</span> <span class="pre">'fame'])</span></em><a class="headerlink" href="#pyneople.character.CharacterSearch.sub_attribute_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.character.Creature">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.character.</span></span><span class="sig-name descname"><span class="pre">Creature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Creature" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyNeople</span></code></p>
+<p>Neople Open API 08. 캐릭터 ‘장착 크리쳐’ 조회</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Creature.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_server_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_character_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Creature.get_data" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>영문 서버 이름과 캐릭터 ID 를 검색하면 장착 크리쳐 정보를 반환</dt><dd><dl>
+<dt>Args :</dt><dd><p>arg_server_id(str) : 영문 서버 이름  ex) diregie</p>
+<p>arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Creature.parse_data">
+<span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Creature.parse_data" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>데이터를 정리해서 하위 attribute에 저장</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_data(dict) : Neople Open API 를 통해 받은 data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.character.EquipmentTrait">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.character.</span></span><span class="sig-name descname"><span class="pre">EquipmentTrait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.EquipmentTrait" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyNeople</span></code></p>
+<p>Neople Open API 11. 캐릭터 ‘장비 특성’ 조회</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.EquipmentTrait.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_server_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_character_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.EquipmentTrait.get_data" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>영문 서버 이름과 캐릭터 ID 를 검색하면 장비 특성 정보를 반환</dt><dd><dl>
+<dt>Args :</dt><dd><p>arg_server_id(str) : 영문 서버 이름  ex) diregie</p>
+<p>arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.EquipmentTrait.parse_data">
+<span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.EquipmentTrait.parse_data" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>데이터를 정리해서 하위 attribute에 저장 강력한 일격과 명상의 레벨만 확인</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_data(dict) : Neople Open API 를 통해 받은 data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.character.Equipments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.character.</span></span><span class="sig-name descname"><span class="pre">Equipments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Equipments" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyNeopleAttributeSetter</span></code></p>
+<p>Neople Open API 06. 캐릭터 ‘장착 장비’ 조회</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyneople.character.Equipments.default_sub_attribute_list">
+<span class="sig-name descname"><span class="pre">default_sub_attribute_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['weapon',</span> <span class="pre">'title',</span> <span class="pre">'jacket',</span> <span class="pre">'shoulder',</span> <span class="pre">'pants',</span> <span class="pre">'shoes',</span> <span class="pre">'waist',</span> <span class="pre">'amulet',</span> <span class="pre">'wrist',</span> <span class="pre">'ring',</span> <span class="pre">'support',</span> <span class="pre">'magic_ston',</span> <span class="pre">'earring',</span> <span class="pre">'set_item_info']</span></em><a class="headerlink" href="#pyneople.character.Equipments.default_sub_attribute_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Equipments.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_server_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_character_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Equipments.get_data" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>영문 서버 이름과 캐릭터 ID 를 검색하면 장착 장비 정보를 반환</dt><dd><dl>
+<dt>Args :</dt><dd><p>arg_server_id(str) : 영문 서버 이름  ex) diregie</p>
+<p>arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Equipments.parse_data">
+<span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Equipments.parse_data" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>데이터를 정리해서 하위 attribute에 저장</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_data(dict) : Neople Open API 를 통해 받은 data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyneople.character.Equipments.sub_attribute_list">
+<span class="sig-name descname"><span class="pre">sub_attribute_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['weapon',</span> <span class="pre">'title',</span> <span class="pre">'jacket',</span> <span class="pre">'shoulder',</span> <span class="pre">'pants',</span> <span class="pre">'shoes',</span> <span class="pre">'waist',</span> <span class="pre">'amulet',</span> <span class="pre">'wrist',</span> <span class="pre">'ring',</span> <span class="pre">'support',</span> <span class="pre">'magic_ston',</span> <span class="pre">'earring',</span> <span class="pre">'set_item_info']</span></em><a class="headerlink" href="#pyneople.character.Equipments.sub_attribute_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.character.Flag">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.character.</span></span><span class="sig-name descname"><span class="pre">Flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Flag" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyNeople</span></code></p>
+<p>Neople Open API 09. 캐릭터 ‘장착 휘장’ 조회</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Flag.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_server_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_character_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Flag.get_data" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>영문 서버 이름과 캐릭터 ID 를 검색하면 장착 휘장 정보를 반환</dt><dd><dl>
+<dt>Args :</dt><dd><p>arg_server_id(str) : 영문 서버 이름  ex) diregie</p>
+<p>arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Flag.parse_data">
+<span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Flag.parse_data" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>데이터를 정리해서 하위 attribute에 저장</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_data(dict) : Neople Open API 를 통해 받은 data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.character.SkillStyle">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.character.</span></span><span class="sig-name descname"><span class="pre">SkillStyle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.SkillStyle" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyNeople</span></code></p>
+<p>Neople Open API 12. 캐릭터 ‘스킬 스타일’ 조회</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.SkillStyle.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_server_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_character_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.SkillStyle.get_data" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>영문 서버 이름과 캐릭터 ID 를 검색하면 스킬 스타일 정보를 반환</dt><dd><dl>
+<dt>Args :</dt><dd><p>arg_server_id(str) : 영문 서버 이름  ex) diregie</p>
+<p>arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.SkillStyle.parse_data">
+<span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.SkillStyle.parse_data" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>데이터를 정리해서 하위 attribute에 저장 스킬 코드만 구현 완료 나머지 추후 개발</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_data(dict) : Neople Open API 를 통해 받은 data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.character.Status">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.character.</span></span><span class="sig-name descname"><span class="pre">Status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Status" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyNeopleAttributeSetter</span></code></p>
+<p>Neople Open API 05. 캐릭터 ‘능력치 정보’ 조회</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyneople.character.Status.default_sub_attribute_list">
+<span class="sig-name descname"><span class="pre">default_sub_attribute_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">dict_keys(['character_id',</span> <span class="pre">'character_name',</span> <span class="pre">'level',</span> <span class="pre">'job_name',</span> <span class="pre">'job_grow_name',</span> <span class="pre">'adventure_name',</span> <span class="pre">'guild_id',</span> <span class="pre">'guild_name',</span> <span class="pre">'hp',</span> <span class="pre">'mp',</span> <span class="pre">'physical_defense_rate',</span> <span class="pre">'magical_defense_rate',</span> <span class="pre">'strength',</span> <span class="pre">'intelligence',</span> <span class="pre">'vitality',</span> <span class="pre">'spirit',</span> <span class="pre">'physical_attack',</span> <span class="pre">'magical_attack',</span> <span class="pre">'physical_critical_chance',</span> <span class="pre">'magical_critical_chance',</span> <span class="pre">'independent_attack',</span> <span class="pre">'attack_speed',</span> <span class="pre">'casting_speed',</span> <span class="pre">'movement_speed',</span> <span class="pre">'fame',</span> <span class="pre">'hit_rate',</span> <span class="pre">'evasion_rate',</span> <span class="pre">'hp_recovery',</span> <span class="pre">'mp_recovery',</span> <span class="pre">'stiffness',</span> <span class="pre">'hit_recovery',</span> <span class="pre">'fire_element_enhancement',</span> <span class="pre">'fire_element_resistance',</span> <span class="pre">'water_element_enhancement',</span> <span class="pre">'water_element_resistance',</span> <span class="pre">'light_element_enhancement',</span> <span class="pre">'light_element_resistance',</span> <span class="pre">'dark_element_enhancement',</span> <span class="pre">'dark_element_resistance',</span> <span class="pre">'physical_defense',</span> <span class="pre">'magical_defense',</span> <span class="pre">'attack_power_increase',</span> <span class="pre">'buff_power',</span> <span class="pre">'attack_power_amplification',</span> <span class="pre">'buff_power_amplification',</span> <span class="pre">'final_damage_increase',</span> <span class="pre">'cooldown_reduction',</span> <span class="pre">'cooldown_recovery_rate',</span> <span class="pre">'final_cooldown_reduction_rate',</span> <span class="pre">'damage_increase',</span> <span class="pre">'critical_damage_increase',</span> <span class="pre">'additional_damage_increase',</span> <span class="pre">'all_attack_power_increase',</span> <span class="pre">'physical_attack_power_increase',</span> <span class="pre">'magical_attack_power_increase',</span> <span class="pre">'independent_attack_power_increase',</span> <span class="pre">'strength_increase',</span> <span class="pre">'intelligence_increase',</span> <span class="pre">'damage_over_time',</span> <span class="pre">'physical_damage_reduction',</span> <span class="pre">'magical_damage_reduction',</span> <span class="pre">'bleed_damage_conversion',</span> <span class="pre">'poison_damage_conversion',</span> <span class="pre">'burn_damage_conversion',</span> <span class="pre">'electrocution_damage_conversion',</span> <span class="pre">'bleed_resistance',</span> <span class="pre">'poison_resistance',</span> <span class="pre">'burn_resistance',</span> <span class="pre">'electrocution_resistance',</span> <span class="pre">'freeze_resistance',</span> <span class="pre">'slow_resistance',</span> <span class="pre">'stun_resistance',</span> <span class="pre">'curse_resistance',</span> <span class="pre">'darkness_resistance',</span> <span class="pre">'petrification_resistance',</span> <span class="pre">'sleep_resistance',</span> <span class="pre">'confusion_resistance',</span> <span class="pre">'restraint_resistance',</span> <span class="pre">'fire_element_damage',</span> <span class="pre">'water_element_damage',</span> <span class="pre">'light_element_damage',</span> <span class="pre">'dark_element_damage',</span> <span class="pre">'bleed_damage',</span> <span class="pre">'poison_damage',</span> <span class="pre">'burn_damage',</span> <span class="pre">'electrocution_damage'])</span></em><a class="headerlink" href="#pyneople.character.Status.default_sub_attribute_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Status.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_server_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_character_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Status.get_data" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>캐릭터의 모험단명부터 명성 등 정보를 반환한다</dt><dd><dl>
+<dt>Args:</dt><dd><p>arg_server_id(str) :  서버 ID</p>
+<p>arg_character_id(str) : 캐릭터 ID</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Status.parse_data">
+<span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Status.parse_data" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>데이터를 정리해서 하위 attribute에 저장</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_data(dict) : Neople Open API 를 통해 받은 data
+attribute_list(iterable of str) : 원하는 하위 속성 명</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyneople.character.Status.sub_attribute_list">
+<span class="sig-name descname"><span class="pre">sub_attribute_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">dict_keys(['character_id',</span> <span class="pre">'character_name',</span> <span class="pre">'level',</span> <span class="pre">'job_name',</span> <span class="pre">'job_grow_name',</span> <span class="pre">'adventure_name',</span> <span class="pre">'guild_id',</span> <span class="pre">'guild_name',</span> <span class="pre">'hp',</span> <span class="pre">'mp',</span> <span class="pre">'physical_defense_rate',</span> <span class="pre">'magical_defense_rate',</span> <span class="pre">'strength',</span> <span class="pre">'intelligence',</span> <span class="pre">'vitality',</span> <span class="pre">'spirit',</span> <span class="pre">'physical_attack',</span> <span class="pre">'magical_attack',</span> <span class="pre">'physical_critical_chance',</span> <span class="pre">'magical_critical_chance',</span> <span class="pre">'independent_attack',</span> <span class="pre">'attack_speed',</span> <span class="pre">'casting_speed',</span> <span class="pre">'movement_speed',</span> <span class="pre">'fame',</span> <span class="pre">'hit_rate',</span> <span class="pre">'evasion_rate',</span> <span class="pre">'hp_recovery',</span> <span class="pre">'mp_recovery',</span> <span class="pre">'stiffness',</span> <span class="pre">'hit_recovery',</span> <span class="pre">'fire_element_enhancement',</span> <span class="pre">'fire_element_resistance',</span> <span class="pre">'water_element_enhancement',</span> <span class="pre">'water_element_resistance',</span> <span class="pre">'light_element_enhancement',</span> <span class="pre">'light_element_resistance',</span> <span class="pre">'dark_element_enhancement',</span> <span class="pre">'dark_element_resistance',</span> <span class="pre">'physical_defense',</span> <span class="pre">'magical_defense',</span> <span class="pre">'attack_power_increase',</span> <span class="pre">'buff_power',</span> <span class="pre">'attack_power_amplification',</span> <span class="pre">'buff_power_amplification',</span> <span class="pre">'final_damage_increase',</span> <span class="pre">'cooldown_reduction',</span> <span class="pre">'cooldown_recovery_rate',</span> <span class="pre">'final_cooldown_reduction_rate',</span> <span class="pre">'damage_increase',</span> <span class="pre">'critical_damage_increase',</span> <span class="pre">'additional_damage_increase',</span> <span class="pre">'all_attack_power_increase',</span> <span class="pre">'physical_attack_power_increase',</span> <span class="pre">'magical_attack_power_increase',</span> <span class="pre">'independent_attack_power_increase',</span> <span class="pre">'strength_increase',</span> <span class="pre">'intelligence_increase',</span> <span class="pre">'damage_over_time',</span> <span class="pre">'physical_damage_reduction',</span> <span class="pre">'magical_damage_reduction',</span> <span class="pre">'bleed_damage_conversion',</span> <span class="pre">'poison_damage_conversion',</span> <span class="pre">'burn_damage_conversion',</span> <span class="pre">'electrocution_damage_conversion',</span> <span class="pre">'bleed_resistance',</span> <span class="pre">'poison_resistance',</span> <span class="pre">'burn_resistance',</span> <span class="pre">'electrocution_resistance',</span> <span class="pre">'freeze_resistance',</span> <span class="pre">'slow_resistance',</span> <span class="pre">'stun_resistance',</span> <span class="pre">'curse_resistance',</span> <span class="pre">'darkness_resistance',</span> <span class="pre">'petrification_resistance',</span> <span class="pre">'sleep_resistance',</span> <span class="pre">'confusion_resistance',</span> <span class="pre">'restraint_resistance',</span> <span class="pre">'fire_element_damage',</span> <span class="pre">'water_element_damage',</span> <span class="pre">'light_element_damage',</span> <span class="pre">'dark_element_damage',</span> <span class="pre">'bleed_damage',</span> <span class="pre">'poison_damage',</span> <span class="pre">'burn_damage',</span> <span class="pre">'electrocution_damage'])</span></em><a class="headerlink" href="#pyneople.character.Status.sub_attribute_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.character.Talismans">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.character.</span></span><span class="sig-name descname"><span class="pre">Talismans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Talismans" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyNeople</span></code></p>
+<p>Neople Open API 10. 캐릭터 ‘장착 탈리스만’ 조회</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Talismans.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_server_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_character_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Talismans.get_data" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>영문 서버 이름과 캐릭터 ID 를 검색하면 장착 탈리스만 정보를 반환</dt><dd><dl>
+<dt>Args :</dt><dd><p>arg_server_id(str) : 영문 서버 이름  ex) diregie</p>
+<p>arg_character_name(str) : 캐릭터 ID ex) 80d9189c86147ab9a7b8c1481be85d95</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Talismans.parse_data">
+<span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Talismans.parse_data" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>데이터를 정리해서 하위 attribute에 저장</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_data(dict) : Neople Open API 를 통해 받은 data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.character.Timeline">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.character.</span></span><span class="sig-name descname"><span class="pre">Timeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Timeline" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyNeople</span></code></p>
+<p>Neople Open API 04. 캐릭터 ‘타임라인 정보’ 조회</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.character.Timeline.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_server_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_character_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_end_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_last_end_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'2017-09-21</span> <span class="pre">00:00'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_last_end_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_print_log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.character.Timeline.get_data" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>서버ID와 캐릭터ID 원하는 수집시간(arg_end_date)을 입력받으면 타임라인데이터를 반환한다.</dt><dd><dl>
+<dt>Args :</dt><dd><p>arg_server_id(str) : 서버ID ex) cain</p>
+<p>arg_character_id(str) : 캐릭터ID ex) 80d9189c86147ab9a7b8c1481be85d95</p>
+<p>arg_end_date(str) : 이 시간까지 수집을 한다 ex) 2023-03-03 15:57</p>
+<p>arg_last_end_date(str) : 이 시간부터 수집을 한다 ex) 2018-03-03 15:57</p>
+<p>arg_last_end_data(dict) : 지금까지 수집한 해당 캐릭터의 마지막 타임라인 데이터</p>
+<p>arg_limit(int) : 한번 request할 때 수집 할 타임라인 데이터의 개수</p>
+<p>arg_code(int) : 수집하고 싶은 타임라인 코드 ex)201, 202 참조) <a class="reference external" href="https://developers.neople.co.kr/contents/guide/pages/all">https://developers.neople.co.kr/contents/guide/pages/all</a></p>
+<p>arg_print_log(boolean) : 데이터 수집의 과정의 print 여부</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pyneople.database_connecter">
+<span id="pyneople-database-connecter-module"></span><h2>pyneople.database_connecter module<a class="headerlink" href="#module-pyneople.database_connecter" title="Link to this heading"></a></h2>
+<p>데이터베이스와 상호작용하는 모듈입니다.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyneople.database_connecter.PostgreSQLConnecter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.database_connecter.</span></span><span class="sig-name descname"><span class="pre">PostgreSQLConnecter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_database_connection_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.database_connecter.PostgreSQLConnecter" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.database_connecter.PostgreSQLConnecter.create_table">
+<span class="sig-name descname"><span class="pre">create_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_drop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.database_connecter.PostgreSQLConnecter.create_table" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>table을 만드는 함수</dt><dd><dl>
+<dt>Args:</dt><dd><p>arg_table_name(str) : 생성하려는 table name</p>
+<p>arg_columns(list) : CREATE TABLE {table_name} (); 안에들어가는 문자열 list ex [“characterId VARCHAR(32) PRIMARY KEY”, “serverId VARCHAR(32) NOT NULL”]</p>
+<dl class="simple">
+<dt>arg_drop(bool)<span class="classifier">{False</span><span class="classifier">이미 동일한 이름의 table이 있으면 에러발생(default),</span></dt><dd><p>True : 이미 동일한 이름의 table이 있으면 삭제하고 만든다}</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.database_connecter.PostgreSQLConnecter.create_table_query">
+<span class="sig-name descname"><span class="pre">create_table_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_pyneople_instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_data_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_constraint_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.database_connecter.PostgreSQLConnecter.create_table_query" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>PostgreSQLConnecter.create_table 메소드의 arg_columns 매개변수로 사용될 값을 반환하는 함수</dt><dd><dl class="simple">
+<dt>Args:</dt><dd><p>arg_pyneople_instance : pyneople instance 혹은 pyneople instance를 원소로 가지는 list
+arg_data_type(list) : VARCHAR(32) PRIMARY KEY 같은 제약 조건을 담은 list
+arg_constraint_options(str) : 해당 테이블의 제약조건 ex) “PRIMARY KEY(characterid, server)”</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.database_connecter.PostgreSQLConnecter.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_sql</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.database_connecter.PostgreSQLConnecter.execute" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>sql문을 실행시키고 commit까지 완료 시키는 함수</dt><dd><dl class="simple">
+<dt>Args:</dt><dd><p>arg_sql(str) : 실행되어야 하는 sql문</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.database_connecter.PostgreSQLConnecter.fetch">
+<span class="sig-name descname"><span class="pre">fetch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.database_connecter.PostgreSQLConnecter.fetch" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>query문을 실행시켜 나오는 결과를 반환한다.</dt><dd><dl class="simple">
+<dt>Args:</dt><dd><p>arg_query(str) : 실행되어야 하는 query문</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.database_connecter.PostgreSQLConnecter.get_column_names">
+<span class="sig-name descname"><span class="pre">get_column_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.database_connecter.PostgreSQLConnecter.get_column_names" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>해당 table의 column 들의 이름을 list로 반환하는 함수</dt><dd><dl class="simple">
+<dt>Args:</dt><dd><p>arg_table_name(str) : 확인하려는 table 이름</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.database_connecter.PostgreSQLConnecter.get_table_name_list">
+<span class="sig-name descname"><span class="pre">get_table_name_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.database_connecter.PostgreSQLConnecter.get_table_name_list" title="Link to this definition"></a></dt>
+<dd><p>해당 데이터베이스의 table 이름의 list를 반환하는 함수</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyneople.database_connecter.PostgreSQLConnecter.insert_into_table">
+<span class="sig-name descname"><span class="pre">insert_into_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_cursor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_ignore_duplication</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.database_connecter.PostgreSQLConnecter.insert_into_table" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>table에 데이터를 삽입하는 함수, 주의사항<span class="classifier">해당 함수는 connectiom.commit() 을 실행하지 않음</span></dt><dd><dl class="simple">
+<dt>Args:</dt><dd><p>arg_cursor(cursor) : psycopg2 cursor 객체
+arg_table_name(str) : 데이터를 삽입하려는 table name
+arg_columns(list) : 데이터를 삽입하려는 column들의 list ex) [“characterId”, “serverId”, “jobName”]
+arg_data(list) : [(‘f2baddf4a296490a4d463cb512a83789’, ‘anton’, ‘총검사’)] &lt;- data 1개여도 이런식으로 삽입
+arg_ignore_duplication(bool) : {True : 중복되는게 있으면 해당 항목만 넘어가고 계속 저장해라, False : 중복되는게 있으면 에러를 발생시켜라}</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyneople.database_connecter.mongodb_to_postgresql">
+<span class="sig-prename descclassname"><span class="pre">pyneople.database_connecter.</span></span><span class="sig-name descname"><span class="pre">mongodb_to_postgresql</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_postgresql_connecter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyneople.database_connecter.PostgreSQLConnecter" title="pyneople.database_connecter.PostgreSQLConnecter"><span class="pre">PostgreSQLConnecter</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_postgresql_table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_mongo_client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MongoClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_mongo_database_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_mongo_collection_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_preprocess_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.database_connecter.mongodb_to_postgresql" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>MomgoDB collection 에 저장된 데이터를 Postgresql로 전처리 후 batch_size씩 저장하는 함수</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_postgresql_connecter(PostgreSQLConnecter) : pyneople database connecter
+arg_postgresql_table_name(str) :  저장하려는 PostgreSQL table name
+arg_mongo_client(MongoClient) : pymongo 의 MongoClient 객체
+arg_mongo_database_name(str) : MongoDB의 database name
+arg_mongo_collection_name(str) : MongoDB의 collection name
+arg_preprocess_function(Callable) : 전처리 함수(input으로 MongoDB의 document가 들어가며 tuple 또는 tuple로 이루어진 list를 반환해야 한다.)
+arg_batch_size(int) : 한번에 조회, 저장하는 document 개수</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyneople.database_connecter.store_character_data_to_mongodb">
+<span class="sig-prename descclassname"><span class="pre">pyneople.database_connecter.</span></span><span class="sig-name descname"><span class="pre">store_character_data_to_mongodb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_mongo_client_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MongoClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_database_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_collection_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_api_key_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_pyneople_character_class_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_total_id_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.database_connecter.store_character_data_to_mongodb" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>character data를 MongoDB에 저장하는 함수</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_mongo_client_instance(MongoClient) : 저장하려는 MongoDB의 pymongo MongoClient 객체
+arg_database_name(str) : 저장하려는 MongoDB의 database name
+arg_collection_name(str) : 저장하려는 MongoDB의 collection name
+arg_api_key_list(list[str]) : Neople Open API 에서 발급된 api key를 원소로 가지는 list
+arg_pyneople_character_class_list(list) : pyneopl.character 객체를 원소로 가지는 list
+arg_total_id_list : “server_id character_id”로 이루어진 total_id</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyneople.database_connecter.store_fame_data_to_mongodb">
+<span class="sig-prename descclassname"><span class="pre">pyneople.database_connecter.</span></span><span class="sig-name descname"><span class="pre">store_fame_data_to_mongodb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_mongo_client_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MongoClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_database_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_collection_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_api_key_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_max_fame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.database_connecter.store_fame_data_to_mongodb" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>최근 90일 이내 접속한 110 레벨 이상 캐릭터 전체를 MongoDB에 저장하는 함수</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_mongo_client_instance(MongoClient) : 저장하려는 MongoDB의 pymongo MongoClient 객체
+arg_database_name(str) : 저장하려는 MongoDB의 database name
+arg_collection_name(str) : 저장하려는 MongoDB의 collection name
+arg_api_key_list(list[str]) : Neople Open API 에서 발급된 api key를 원소로 가지는 list
+arg_max_fame(int) : 조회 하려는 최대 명성</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyneople.database_connecter.store_timeline_data_to_mongodb">
+<span class="sig-prename descclassname"><span class="pre">pyneople.database_connecter.</span></span><span class="sig-name descname"><span class="pre">store_timeline_data_to_mongodb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_mongo_client_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MongoClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_database_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_collection_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_api_key_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_total_id_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'2017-09-21</span> <span class="pre">00:00'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.database_connecter.store_timeline_data_to_mongodb" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>timeline data를 MongoDB에 저장하는 함수</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_mongo_client_instance(MongoClient) : 저장하려는 MongoDB의 pymongo MongoClient 객체
+arg_database_name(str) : 저장하려는 MongoDB의 database name
+arg_collection_name(str) : 저장하려는 MongoDB의 collection name
+arg_api_key_list(list[str]) : Neople Open API 에서 발급된 api key를 원소로 가지는 list
+arg_end_time(str) : 타임라인 데이터 마지막 수집 시간 ex) “2024-05-02 05:30”,
+arg_start_time(str) : 타임라인 데이터 첫 수집 시간 ex) “2024-04-25 12:00”,
+arg_code(int) : 수집하고 싶은 타임라인 코드 ex)201, 202 참조) <a class="reference external" href="https://developers.neople.co.kr/contents/guide/pages/all">https://developers.neople.co.kr/contents/guide/pages/all</a>
+arg_total_id_list : “server_id character_id”로 이루어진 total_id</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pyneople.functions">
+<span id="pyneople-functions-module"></span><h2>pyneople.functions module<a class="headerlink" href="#module-pyneople.functions" title="Link to this heading"></a></h2>
+<p>pyneople에서 사용되는 함수와 클래스입니다.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="pyneople.functions.NeopleOpenAPIError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.functions.</span></span><span class="sig-name descname"><span class="pre">NeopleOpenAPIError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.functions.NeopleOpenAPIError" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Error 핸들링을 위한 Class</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="pyneople.functions.ServerMaintenanceError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyneople.functions.</span></span><span class="sig-name descname"><span class="pre">ServerMaintenanceError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.functions.ServerMaintenanceError" title="Link to this definition"></a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Error 핸들링을 위한 Class</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyneople.functions.attr_flatten">
+<span class="sig-prename descclassname"><span class="pre">pyneople.functions.</span></span><span class="sig-name descname"><span class="pre">attr_flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.functions.attr_flatten" title="Link to this definition"></a></dt>
+<dd><p>객체를 입력받으면 모든 하위속성의 이름을 문자열 list로 반환한다</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyneople.functions.change_settings">
+<span class="sig-prename descclassname"><span class="pre">pyneople.functions.</span></span><span class="sig-name descname"><span class="pre">change_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_time_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_time_sleep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0015</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.functions.change_settings" title="Link to this definition"></a></dt>
+<dd><p>request에 필요한 설정 값을 바꾸는 함수</p>
+<dl>
+<dt>초기 설정 값은 각각 5초, 0.0015초</dt><dd><dl>
+<dt>Args :</dt><dd><p>arg_time_out(int) : 해당 시간동안 응답이 없으면 에러 처리한다</p>
+<p>arg_time_sleep(float) : 한 번의 요청 후 쉬는 시간</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyneople.functions.get_job_info">
+<span class="sig-prename descclassname"><span class="pre">pyneople.functions.</span></span><span class="sig-name descname"><span class="pre">get_job_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.functions.get_job_info" title="Link to this definition"></a></dt>
+<dd><p>직업 정보를 받아오는 함수</p>
+<dl class="simple">
+<dt>전직명(각성명)을 1차 전직명으로 통일시키는 jobname_equalize 함수에 매개변수로 사용되는 객체를 반환함</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_api_key(str) : Neople Open API key</p>
+</dd>
+<dt>Retruns :</dt><dd><p>jobname_equalize 함수에 매개변수로 사용되는 객체</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyneople.functions.get_request">
+<span class="sig-prename descclassname"><span class="pre">pyneople.functions.</span></span><span class="sig-name descname"><span class="pre">get_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.functions.get_request" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>url 입력시 data 가져오는 함수</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_url(str) : 원하는 url 주소</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyneople.functions.jobname_equalize">
+<span class="sig-prename descclassname"><span class="pre">pyneople.functions.</span></span><span class="sig-name descname"><span class="pre">jobname_equalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_job_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_job_grow_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_job_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.functions.jobname_equalize" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>직업명과 전직명을 받으면 해당 전직명으로 반환</dt><dd><dl class="simple">
+<dt>Args :</dt><dd><p>arg_job_name(str) : 직업명 ex) 총검사
+arg_job_grow_name(str) : 전직명 ex) 빅보스
+arg_job_info(dict) : get_job_info 함수를 통해 받은 직업 정보</p>
+</dd>
+<dt>Retruns :</dt><dd><p>해당 직업의 1차 전직명 ex) 히트맨</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyneople.functions.value_flatten">
+<span class="sig-prename descclassname"><span class="pre">pyneople.functions.</span></span><span class="sig-name descname"><span class="pre">value_flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyneople.functions.value_flatten" title="Link to this definition"></a></dt>
+<dd><p>객체를 입력받으면 모든 하위속성의 값을 list로 반환한다</p>
+</dd></dl>
+
+</section>
+<section id="module-pyneople">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyneople" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="pyneople" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, ippo252525.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
