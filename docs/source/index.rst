@@ -11,7 +11,7 @@ Welcome to pyneople's documentation!
    :caption: Contents:
 
 
-   pyneople
+   modules
 Indices and tables
 ==================
 
