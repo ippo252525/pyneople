@@ -24,15 +24,22 @@ def store_fame_data_to_mongodb(
         arg_database_name : str,
         arg_collection_name : str,
         arg_api_key_list : list[str],
-        arg_max_fame : int = 100000):
+        arg_max_fame : int = 100000,
+        arg_min_fame : int = 0):
     """
     최근 90일 이내 접속한 110 레벨 이상 캐릭터 전체를 MongoDB에 저장하는 함수
         Args :
             arg_mongo_client_instance(MongoClient) : 저장하려는 MongoDB의 pymongo MongoClient 객체  
+            
             arg_database_name(str) : 저장하려는 MongoDB의 database name  
+            
             arg_collection_name(str) : 저장하려는 MongoDB의 collection name  
+            
             arg_api_key_list(list[str]) : Neople Open API 에서 발급된 api key를 원소로 가지는 list  
-            arg_max_fame(int) : 조회 하려는 최대 명성  
+            
+            arg_max_fame(int) : 조회 하려는 최대 명성
+
+            arg_min_fame(int) : 조회 하려는 최소 명성  
     """
     def task_get_request(character_fame_instance, args_queue, data_queue, completed_tasks_count, tasks_to_be_completed_count):
         """
@@ -80,8 +87,8 @@ def store_fame_data_to_mongodb(
                         # 최대명성을 1만 내림
                         min_fame = max_fame - 1
 
-                    # 명성이 최소값이 0보다 작거나 같으면
-                    if min_fame <= 0:
+                    # 명성이 최소값이 arg_min_fame보다 작거나 같으면
+                    if min_fame <= arg_min_fame:
                         # 해당 직업 완료
                         completed_tasks_count.value += 1
                         print(f"완료된 직업 개수 {completed_tasks_count.value}", end="\r")
@@ -89,7 +96,7 @@ def store_fame_data_to_mongodb(
                     
                     # 인자정보 args queue에 저장
                     args_dict = {
-                        'arg_min_fame' : 0,
+                        'arg_min_fame' : arg_min_fame,
                         'arg_max_fame' : min_fame,
                         'arg_job_id' : character_search_instance.job_id,
                         'arg_job_grow_id' : character_search_instance.job_grow_id,
@@ -133,7 +140,7 @@ def store_fame_data_to_mongodb(
     for job_id , job_grow_id in job_id_list:
         max_fame = arg_max_fame
         args_dict = {
-            'arg_min_fame' : 0,
+            'arg_min_fame' : arg_min_fame,
             'arg_max_fame' : max_fame,
             'arg_job_id' : job_id,
             'arg_job_grow_id' : job_grow_id,
@@ -156,18 +163,21 @@ def store_character_data_to_mongodb(
     character data를 MongoDB에 저장하는 함수
         Args :
             arg_mongo_client_instance(MongoClient) : 저장하려는 MongoDB의 pymongo MongoClient 객체   
+            
             arg_database_name(str) : 저장하려는 MongoDB의 database name  
+            
             arg_collection_name(str) : 저장하려는 MongoDB의 collection name  
+            
             arg_api_key_list(list[str]) : Neople Open API 에서 발급된 api key를 원소로 가지는 list  
+            
             arg_pyneople_character_class_list(list) : pyneopl.character 객체를 원소로 가지는 list  
+            
             arg_total_id_list : "server_id character_id"로 이루어진 total_id  
     """    
-    def task_get_request(pyneople_instance_list, args_queue, data_queue, completed_tasks_count, tasks_to_be_completed_count, fail_queue):
+    def task_get_request(pyneople_instance_list, args_queue, data_queue, completed_tasks_count, tasks_to_be_completed_count):
         while completed_tasks_count.value != tasks_to_be_completed_count:
             if not args_queue.empty():
                 args_dict = args_queue.get()
-                completed_tasks_count.value += 1
-                print(f"{completed_tasks_count.value}/{tasks_to_be_completed_count}", end="\r")
                 try:
                     for pyneople_instance in pyneople_instance_list:
                         data = pyneople_instance.get_data(**args_dict)
@@ -176,13 +186,18 @@ def store_character_data_to_mongodb(
                 except ServerMaintenanceError:
                     raise Exception("서버점검중")
                 except:
-                    fail_queue.put(args_dict)
+                    data_queue.put({"pyneople_fail" : args_dict})
 
-    def task_store_data(data_queue, mongo_collection, completed_tasks_count, tasks_to_be_completed_count):
+    def task_store_data(data_queue, mongo_collection, completed_tasks_count, tasks_to_be_completed_count, fail_queue):
         while completed_tasks_count.value != tasks_to_be_completed_count:
             if not data_queue.empty():
                 data = data_queue.get()
-                mongo_collection.insert_one(data)
+                completed_tasks_count.value += 1
+                print(f"{completed_tasks_count.value}/{tasks_to_be_completed_count}", end="\r")
+                if data.get("pyneople_fail"):
+                    fail_queue.put(data.get("pyneople_fail"))
+                else:
+                    mongo_collection.insert_one(data)
     
     mongo_database = arg_mongo_client_instance[arg_database_name]
     collection = mongo_database[arg_collection_name]    
@@ -196,9 +211,9 @@ def store_character_data_to_mongodb(
         pyneople_instance_list = []
         for pyneople_character_class in arg_pyneople_character_class_list:
             pyneople_instance_list.append(pyneople_character_class(api_key))
-        process = Process(target=task_get_request, args=(pyneople_instance_list, args_queue, data_queue, completed_tasks_count, tasks_to_be_completed_count, fail_queue))
+        process = Process(target=task_get_request, args=(pyneople_instance_list, args_queue, data_queue, completed_tasks_count, tasks_to_be_completed_count))
         process_list.append(process)
-    process = Process(target=task_store_data, args=(data_queue, collection, completed_tasks_count, tasks_to_be_completed_count))
+    process = Process(target=task_store_data, args=(data_queue, collection, completed_tasks_count, tasks_to_be_completed_count, fail_queue))
     process_list.append(process)
 
     for process in process_list:
@@ -234,20 +249,25 @@ def store_timeline_data_to_mongodb(
     timeline data를 MongoDB에 저장하는 함수
         Args :
             arg_mongo_client_instance(MongoClient) : 저장하려는 MongoDB의 pymongo MongoClient 객체  
+            
             arg_database_name(str) : 저장하려는 MongoDB의 database name  
+            
             arg_collection_name(str) : 저장하려는 MongoDB의 collection name  
+            
             arg_api_key_list(list[str]) : Neople Open API 에서 발급된 api key를 원소로 가지는 list  
+            
             arg_end_time(str) : 타임라인 데이터 마지막 수집 시간 ex) "2024-05-02 05:30",  
+            
             arg_start_time(str) : 타임라인 데이터 첫 수집 시간 ex) "2024-04-25 12:00",              
+            
             arg_code(int) : 수집하고 싶은 타임라인 코드 ex)201, 202 참조) https://developers.neople.co.kr/contents/guide/pages/all  
+            
             arg_total_id_list : "server_id character_id"로 이루어진 total_id  
     """     
-    def task_get_request(pyneople_instance, args_queue, data_queue, completed_tasks_count, tasks_to_be_completed_count, fail_queue):
+    def task_get_request(pyneople_instance, args_queue, data_queue, completed_tasks_count, tasks_to_be_completed_count):
         while completed_tasks_count.value != tasks_to_be_completed_count:
             if not args_queue.empty():
                 args_dict = args_queue.get()
-                completed_tasks_count.value += 1
-                print(f"{completed_tasks_count.value}/{tasks_to_be_completed_count}", end="\r")
                 try:
                     data = pyneople_instance.get_data(**args_dict)
                     data['total_id'] = pyneople_instance._total_id
@@ -255,13 +275,19 @@ def store_timeline_data_to_mongodb(
                 except ServerMaintenanceError:
                     raise Exception("서버점검중")
                 except :
-                    fail_queue.put(args_dict)
+                    data_queue.put({"pyneople_fail" : args_dict})
 
-    def task_store_data(data_queue, mongo_collection, completed_tasks_count, tasks_to_be_completed_count):
+
+    def task_store_data(data_queue, mongo_collection, completed_tasks_count, tasks_to_be_completed_count, fail_queue):
         while completed_tasks_count.value != tasks_to_be_completed_count:
             if not data_queue.empty():
                 data = data_queue.get()
-                mongo_collection.insert_one(data)
+                completed_tasks_count.value += 1
+                print(f"{completed_tasks_count.value}/{tasks_to_be_completed_count}", end="\r")
+                if data.get("pyneople_fail"):
+                    fail_queue.put(data.get("pyneople_fail"))
+                else:
+                    mongo_collection.insert_one(data)
     
     mongo_database = arg_mongo_client_instance[arg_database_name]
     collection = mongo_database[arg_collection_name]    
@@ -274,9 +300,9 @@ def store_timeline_data_to_mongodb(
     
     for api_key in arg_api_key_list:
         pyneople_instance = Timeline(api_key)
-        process = Process(target=task_get_request, args=(pyneople_instance, args_queue, data_queue, completed_tasks_count, tasks_to_be_completed_count, fail_queue))
+        process = Process(target=task_get_request, args=(pyneople_instance, args_queue, data_queue, completed_tasks_count, tasks_to_be_completed_count))
         process_list.append(process)
-    process = Process(target=task_store_data, args=(data_queue, collection, completed_tasks_count, tasks_to_be_completed_count))
+    process = Process(target=task_store_data, args=(data_queue, collection, completed_tasks_count, tasks_to_be_completed_count, fail_queue))
     process_list.append(process)
 
     for process in process_list:
@@ -341,7 +367,9 @@ class PostgreSQLConnecter():
         PostgreSQLConnecter.create_table 메소드의 arg_columns 매개변수로 사용될 값을 반환하는 함수
             Args:
                 arg_pyneople_instance : pyneople instance 혹은 pyneople instance를 원소로 가지는 list  
+                
                 arg_data_type(list) : VARCHAR(32) PRIMARY KEY 같은 제약 조건을 담은 list  
+                
                 arg_constraint_options(str) : 해당 테이블의 제약조건 ex) "PRIMARY KEY(characterid, server)"  
         """
         colnames = []
@@ -366,8 +394,7 @@ class PostgreSQLConnecter():
                 
                 arg_columns(list) : CREATE TABLE {table_name} (); 안에들어가는 문자열 list ex ["characterId VARCHAR(32) PRIMARY KEY", "serverId VARCHAR(32) NOT NULL"]
                 
-                arg_drop(bool) : {False : 이미 동일한 이름의 table이 있으면 에러발생(default), 
-                                True : 이미 동일한 이름의 table이 있으면 삭제하고 만든다}
+                arg_drop(bool) : {False : 이미 동일한 이름의 table이 있으면 에러발생(default), True : 이미 동일한 이름의 table이 있으면 삭제하고 만든다}
         """    
         columns_str = ', '.join(arg_columns)
         if arg_drop :
@@ -414,9 +441,13 @@ class PostgreSQLConnecter():
         table에 데이터를 삽입하는 함수, 주의사항 : 해당 함수는 connectiom.commit() 을 실행하지 않음
             Args:
                 arg_cursor(cursor) : psycopg2 cursor 객체  
+                
                 arg_table_name(str) : 데이터를 삽입하려는 table name  
+                
                 arg_columns(list) : 데이터를 삽입하려는 column들의 list ex) ["characterId", "serverId", "jobName"]  
+                
                 arg_data(list) : [('f2baddf4a296490a4d463cb512a83789', 'anton', '총검사')] <- data 1개여도 이런식으로 삽입  
+                
                 arg_ignore_duplication(bool) : {True : 중복되는게 있으면 해당 항목만 넘어가고 계속 저장해라, False : 중복되는게 있으면 에러를 발생시켜라}  
         """
         insert_query = sql.SQL("INSERT INTO {} ({}) VALUES {}").format(
@@ -439,11 +470,17 @@ def mongodb_to_postgresql(arg_postgresql_connecter : PostgreSQLConnecter,
     MomgoDB collection 에 저장된 데이터를 Postgresql로 전처리 후 batch_size씩 저장하는 함수
         Args :
             arg_postgresql_connecter(PostgreSQLConnecter) : pyneople database connecter  
+            
             arg_postgresql_table_name(str) :  저장하려는 PostgreSQL table name  
+            
             arg_mongo_client(MongoClient) : pymongo 의 MongoClient 객체  
+            
             arg_mongo_database_name(str) : MongoDB의 database name  
+            
             arg_mongo_collection_name(str) : MongoDB의 collection name  
+            
             arg_preprocess_function(Callable) : 전처리 함수(input으로 MongoDB의 document가 들어가며 tuple 또는 tuple로 이루어진 list를 반환해야 한다.)  
+            
             arg_batch_size(int) : 한번에 조회, 저장하는 document 개수  
     """
     postgresql_columns = arg_postgresql_connecter.get_column_names(arg_postgresql_table_name)
@@ -480,7 +517,6 @@ def mongodb_to_postgresql(arg_postgresql_connecter : PostgreSQLConnecter,
     # 연결 종료
     arg_mongo_client.close()
     postgresql_cursor.close()
-    arg_postgresql_connecter.connection.close()
     print("done")    
 
             

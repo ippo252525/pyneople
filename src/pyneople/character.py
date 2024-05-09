@@ -4,7 +4,7 @@ Neople Open API 에서 Character를 기반으로 한 정보를 다루는 모듈�
 
 import datetime
 import urllib.parse
-from typing import Iterable, Union
+from typing import Union
 from .functions import get_request, explain_enchant
 from .METADATA import SERVER_NAME_2_ID, CHARACTER_SEARCH_NAME, \
                     CHARACTER_INFORMATION_NAME, STATUS_NAME, EQUIPMENT_LIST, AVATAR_LIST, PLATINUM_AVATAR_LIST, \
@@ -50,6 +50,13 @@ class PyNeopleAttributeSetter(PyNeople):
                 raise ValueError("사용할 수 없는 attribute 입니다.")
         cls.sub_attribute_list = arg_new_attribute_list
 
+    @classmethod
+    def delete_sub_attributes(cls, arg_delete_attribute_list : list[str]):
+        for new_attribute_name in arg_delete_attribute_list:
+            if not new_attribute_name in cls.default_sub_attribute_list:
+                raise ValueError("제거 할 수 없는 attribute 입니다.")
+        cls.sub_attribute_list = [sub_attr for sub_attr in cls.default_sub_attribute_list if sub_attr not in arg_delete_attribute_list]
+
     @classmethod        
     def init_sub_attributes(cls):
         cls.sub_attribute_list = cls.default_sub_attribute_list
@@ -91,6 +98,7 @@ class CharacterSearch(PyNeopleAttributeSetter):
         데이터를 정리해서 하위 속성에 저장
             Args :
                 arg_data(dict) : Neople Open API 를 통해 받은 data  
+                
                 attribute_list(iterable of str) : 원하는 하위 속성 명
         """
         # 하위 속성에 데이터 할당
@@ -122,6 +130,7 @@ class CharacterInformation(PyNeopleAttributeSetter):
         데이터를 정리해서 하위 속성에 저장
             Args :
                 arg_data(dict) : Neople Open API 를 통해 받은 data  
+                
                 attribute_list(iterable of str) : 원하는 하위 속성 명  
         """
         # 하위 속성에 데이터 할당
@@ -147,7 +156,7 @@ class Timeline(PyNeople):
             Args :
                 arg_server_id(str) : 서버ID ex) cain  
                 
-                arg_character_id(str) : 캐릭터ID ex) 82d9189c86147ab9a7b8c1481be85d95  
+                arg_character_id(str) : 캐릭터ID ex) d018e5f7e7519e34b8ef21db0c40fd98
                 
                 arg_end_date(str) : 이 시간까지 수집을 한다 ex) 2023-03-03 15:57  
                 
@@ -230,7 +239,8 @@ class Status(PyNeopleAttributeSetter):
         """
         데이터를 정리해서 하위 attribute에 저장
             Args :
-                arg_data(dict) : Neople Open API 를 통해 받은 data  
+                arg_data(dict) : Neople Open API 를 통해 받은 data
+
                 attribute_list(iterable of str) : 원하는 하위 속성 명
         """
         
@@ -518,7 +528,7 @@ class Avatars(PyNeopleAttributeSetter):
                 arg_server_id(str) : 영문 서버 이름  ex) cain
                 
                 arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
-        """        
+        """
         self._total_id = f"{arg_server_id} {arg_character_id}"
         url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/avatar?apikey={self._api_key}'
         return get_request(url)
@@ -834,12 +844,19 @@ class CharacterFame(PyNeople):
         해당 명성 구간의 캐릭터 정보를 원소로 가지는 list를 반환함
             Args : 
                 arg_min_fame(int) : 명성 구간 최소값(최대 명성과의 차이가 2000이상이면 최대명성 - 2000 으로 입력됨)
+                
                 arg_max_fame(int) : 명성 구간 최대값
+                
                 arg_job_id(str) : 캐릭터 직업 고유 코드
+                
                 arg_job_grow_id(str) : 캐릭터 전직 직업 고유 코드(jobId 필요)
+                
                 arg_is_all_job_grow(bool) : jobGrowId 입력 시 연계되는 전체 전직 포함 조회 ex) 검성 -> 웨펀마스터, 검성, 검신, 眞웨펀마스터
+                
                 arg_is_buff(bool) : 버퍼만 조회(true), 딜러만 조회(false), 전체 조회(미 입력)	
+                
                 arg_server_id(str) : 서버 아이디
+                
                 arg_limit(int) : 반환 Row 수
         """
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters-fame?minFame={arg_min_fame}&maxFame={arg_max_fame}&jobId={arg_job_id}&jobGrowId={arg_job_grow_id}&isAllJobGrow={arg_is_all_job_grow}&isBuff={arg_is_buff}&limit={arg_limit}&apikey={self._api_key}"

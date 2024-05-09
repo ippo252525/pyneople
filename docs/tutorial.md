@@ -1,4 +1,4 @@
-### Installation
+## Installation
 ```bash
 pip install pyneople
 ```
@@ -180,4 +180,72 @@ def prepro(document):
         ))
     return data    
 mongodb_to_postgresql(pg_connecter, 'fame_tb_20240501', mongo_client, 'dnf', 'fame_tb_20240502', prepro)
+```
+
+## Example 1. 명성 65000 이상의 캐릭터 수집 후 캐릭터의 착용중인 미스트기어 장비 개수 수집하고 Postgresql에 저장하기
+```python
+from src.pyneople.database_connecter import PostgreSQLConnecter, mongodb_to_postgresql, store_fame_data_to_mongodb, store_character_data_to_mongodb
+from src.pyneople.character import BaseEquipment, Equipment, Equipments, CharacterSearch
+from src.pyneople.functions import attr_flatten, value_flatten
+from pymongo import MongoClient
+API_KEY_LIST = [
+    "api_key_1",
+    "api_key_2",
+    "api_key_3"
+]
+mg = MongoClient("mongodb://localhost:27017/")
+pg = PostgreSQLConnecter({
+    'host' : 'localhost', 
+    'user' : 'dnfdba', 
+    'password':'1557', 
+    'database':'dnf'
+})
+# 명성 65000이상의 캐릭터 데이터 가져오기
+store_fame_data_to_mongodb(mg, 'dnf', 'fame_tb_upper_65000', API_KEY_LIST, 100000, 65000)
+
+# 전처리 함수 정의
+CharacterSearch.set_sub_attributes(["character_id", "server_id"])
+cs = CharacterSearch("")
+cs.parse_data({})
+def prepro(document):
+    document = document['rows']
+    result_list = []
+    for character_data in document:
+        cs.parse_data(character_data)
+        result_list.append((cs.character_id, cs.server_id))
+    return result_list
+
+# PostgreSQL table 생성
+query = pg.create_table_query(cs, ["CHAR(32)", "VARCHAR(8)"], "PRIMARY KEY (character_id, server_id)")
+pg.create_table("fame_tb_upper_65000", query, True)
+
+# MongoDB의 데이터를 PostgreSQL으로 저장
+mongodb_to_postgresql(pg, "fame_tb_upper_65000", mg, "dnf", "fame_tb_upper_65000", prepro)
+
+# 캐릭터의 장착 장비 정보를 MongoDB에 저장
+query =\
+"""
+SELECT server_id, character_id
+FROM fame_tb_upper_65000
+"""
+total_id_list = pg.fetch(query)
+total_id_list = [f"{server_id} {character_id}" for server_id, character_id in total_id_list]
+store_character_data_to_mongodb(mg, 'dnf', 'mist_gear_tb', API_KEY_LIST, [Equipments], total_id_list)
+
+# 캐릭터의 미스트기어 정보만 확인하도록 설정
+BaseEquipment.set_sub_attributes([])
+Equipment.set_sub_attributes(["mist_gear"])
+Equipments.delete_sub_attributes(["weapon", "set_item_info"])
+eq = Equipments("")
+
+# 전처리 함수 설정
+def prepro(document):
+    eq.parse_data(document)
+    return (document['total_id'] , len([i for i in value_flatten(eq) if i]))
+
+
+pg.create_table("mist_gear_tb", ["total_id VARCHAR(43)", "mist_gear SMALLINT", "PRIMARY KEY (total_id)"], True)
+
+# MongoDB의 데이터를 PostgreSQL으로 저장
+mongodb_to_postgresql(pg, "mist_gear_tb", mg, "dnf", "mist_gear_tb", prepro)
 ```
