@@ -182,7 +182,8 @@ def prepro(document):
 mongodb_to_postgresql(pg_connecter, 'fame_tb_20240501', mongo_client, 'dnf', 'fame_tb_20240502', prepro)
 ```
 
-## Example 1. 명성 65000 이상의 캐릭터 수집 후 캐릭터의 착용중인 미스트기어 장비 개수 수집하고 Postgresql에 저장하기
+## Example 
+### 1. 명성 65000 이상의 캐릭터 수집 후 캐릭터의 착용중인 미스트기어 장비 개수 수집하고 Postgresql에 저장하기
 ```python
 from src.pyneople.database_connecter import PostgreSQLConnecter, mongodb_to_postgresql, store_fame_data_to_mongodb, store_character_data_to_mongodb
 from src.pyneople.character import BaseEquipment, Equipment, Equipments, CharacterSearch
