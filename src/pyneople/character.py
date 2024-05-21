@@ -1,5 +1,5 @@
 """
-Neople Open API 에서 Character를 기반으로 한 정보를 다루는 모듈입니다.
+Neople Open API 에서 Character를 기반으로 한 정보를 다루는 모듈입니다.ss
 """
 
 import datetime
