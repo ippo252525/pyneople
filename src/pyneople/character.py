@@ -1,14 +1,14 @@
 """
-Neople Open API 에서 Character를 기반으로 한 정보를 다루는 모듈입니다.ss
+Neople Open API 에서 Character를 기반으로 한 정보를 다루는 모듈입니다.
 """
-
+import asyncio
 import datetime
 import urllib.parse
 from typing import Union
-from .functions import get_request, explain_enchant
+from .functions import get_request, async_get_request, explain_enchant, NeopleOpenAPIError
 from .METADATA import SERVER_NAME_2_ID, CHARACTER_SEARCH_NAME, \
                     CHARACTER_INFORMATION_NAME, STATUS_NAME, EQUIPMENT_LIST, AVATAR_LIST, PLATINUM_AVATAR_LIST, \
-                    BASE_EQUIPMENT_NAME, EQUIPMENT_NAME, WEAPON_NAME, AVATAR_NAME, PLATINUM_AVATAR_NAME, GROWINFO_NAME
+                    BASE_EQUIPMENT_NAME, EQUIPMENT_NAME, WEAPON_NAME, AVATAR_NAME, PLATINUM_AVATAR_NAME, GROWINFO_NAME, SERVER_ID_2_TOTAL_ID
 
 __all__ = [
     "CharacterSearch",
@@ -42,7 +42,8 @@ class PyNeopleAttributeSetter(PyNeople):
     """
     하위 Attribute를 설정 할 수 있는 PyNeople Class 의 부모 Class
     """
-
+    default_sub_attribute_list = []
+    
     @classmethod
     def set_sub_attributes(cls, arg_new_attribute_list : list[str]):
         for new_attribute_name in arg_new_attribute_list:
@@ -61,6 +62,17 @@ class PyNeopleAttributeSetter(PyNeople):
     def init_sub_attributes(cls):
         cls.sub_attribute_list = cls.default_sub_attribute_list
 
+class PyneopleCharacter(PyNeopleAttributeSetter):
+    
+    def get_data(self, arg_server_id : str, arg_character_id : str):
+        url = self.get_url(arg_server_id, arg_character_id)
+        data = asyncio.run(async_get_request(url))
+        data['total_id'] = f"{SERVER_ID_2_TOTAL_ID[arg_server_id]}{arg_character_id}"
+        return data
+    
+    def parse_data(self, arg_data : dict):
+        self.total_id = arg_data.get('total_id')
+                
 class CharacterSearch(PyNeopleAttributeSetter):
     """
     Neople Open API 02. 캐릭터 검색
@@ -68,6 +80,16 @@ class CharacterSearch(PyNeopleAttributeSetter):
     default_sub_attribute_list = CHARACTER_SEARCH_NAME.keys()
     sub_attribute_list = default_sub_attribute_list
 
+    def get_url(self, arg_server_name : str, arg_character_name : str):
+        if arg_server_name in SERVER_NAME_2_ID.keys():
+            arg_server_name = SERVER_NAME_2_ID[arg_server_name]
+        elif arg_server_name in SERVER_NAME_2_ID.values():
+            pass
+        else:
+            raise ValueError("서버 이름을 확인하시오")
+        self._server_id = arg_server_name
+        return f"https://api.neople.co.kr/df/servers/{arg_server_name}/characters?characterName={urllib.parse.quote(arg_character_name)}&limit=1&apikey={self._api_key}"
+    
     def get_data(self, arg_server_name : str, arg_character_name : str):
         """
         서버 이름과 캐릭터 이름을 검색하면 기본 정보를 반환
@@ -76,20 +98,14 @@ class CharacterSearch(PyNeopleAttributeSetter):
                 
                 arg_character_name(str) : 캐릭터 이름 ex) 홍길동
         """
-        
-        # 한글 서버명을 영문 서버명으로 변환, 영문 서버명은 그대로 입력, 그 외의 입력은 에러 발생
-        if arg_server_name in SERVER_NAME_2_ID.keys():
-            arg_server_name = SERVER_NAME_2_ID[arg_server_name]
-        elif arg_server_name in SERVER_NAME_2_ID.values():
-            pass
-        else:
-            raise ValueError("서버 이름을 확인하시오")
-        self._server_id = arg_server_name
-        url = f"https://api.neople.co.kr/df/servers/{arg_server_name}/characters?characterName={urllib.parse.quote(arg_character_name)}&limit=1&apikey={self._api_key}"
-        
+        url = self.get_url(arg_server_name, arg_character_name)
         # parse_data에 매개변수로 사용 될 것을 생각해서 dict를 받을 수 있도록 정보 다듬어서 제공
         try:
-            return get_request(url).get("rows")[0]
+            data = asyncio.run(async_get_request(url)).get("rows")
+            if data:
+                return data[0]
+            else:
+                raise NeopleOpenAPIError("{'status': 404, 'code': 'DNF001', 'message': 'NOT_FOUND_CHARACTER'}")
         except IndexError:
             return dict()
 
@@ -106,26 +122,33 @@ class CharacterSearch(PyNeopleAttributeSetter):
             setattr(self, attribute_name, arg_data.get(CHARACTER_SEARCH_NAME[attribute_name]))
 
 
-class CharacterInformation(PyNeopleAttributeSetter):
+class CharacterInformation(PyneopleCharacter):
     """
     Neople Open API 03. 캐릭터 '기본정보' 조회
     """
     default_sub_attribute_list = CHARACTER_INFORMATION_NAME.keys()
     sub_attribute_list = default_sub_attribute_list
-    def get_data(self, arg_server_id : str, arg_character_id : str):
-        """
-        영문 서버 이름과 캐릭터 ID 를 검색하면 기본 정보를 반환
-            Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) cain  
+
+    def get_url(self, arg_server_id : str, arg_character_id : str):
+        return f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}?apikey={self._api_key}"
+
+    # def get_data(self, arg_server_id : str, arg_character_id : str):
+    #     """
+    #     영문 서버 이름과 캐릭터 ID 를 검색하면 기본 정보를 반환
+    #         Args : 
+    #             arg_server_id(str) : 영문 서버 이름  ex) cain  
                 
-                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
-        """    
-        self._total_id = f"{arg_server_id} {arg_character_id}"
-        url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}?apikey={self._api_key}"
-        return get_request(url)
+    #             arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
+    #     """    
+    #     # self._total_id = f"{arg_server_id} {arg_character_id}"
+        
+    #     url = self.get_url(arg_server_id, arg_character_id)
+    #     data = get_request(url)
+    #     data['total_id'] = f"{arg_server_id}{arg_character_id}"
+    #     return data
 
     def parse_data(self, arg_data : dict):
-
+        super().parse_data()
         """
         데이터를 정리해서 하위 속성에 저장
             Args :
@@ -141,8 +164,8 @@ class CharacterInformation(PyNeopleAttributeSetter):
 class Timeline(PyNeople):
     """
     Neople Open API 04. 캐릭터 '타임라인 정보' 조회
-    """  
-    def get_data(self, 
+    """
+    def get_data(self,  
                  arg_server_id : str, 
                  arg_character_id : str, 
                  arg_end_date : str, 
@@ -183,7 +206,8 @@ class Timeline(PyNeople):
             url = f"""https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/timeline?limit={arg_limit}&code={arg_code}&startDate={start_date.strftime('%Y-%m-%d %H:%M')}&endDate={end_date.strftime('%Y-%m-%d %H:%M')}&next={next}&apikey={self._api_key}"""
             if arg_print_log:
                 print(f"서버 = {arg_server_id}, 캐릭터 = {arg_character_id} 시작 = {start_date.strftime('%Y-%m-%d %H:%M')}, 끝 = {end_date.strftime('%Y-%m-%d %H:%M')}")
-            data = get_request(url)
+            data = asyncio.run(async_get_request(url))
+            # data = get_request(url)
             next = data['timeline']['next']
 
             # 데이터가 있다면
@@ -216,14 +240,14 @@ class Timeline(PyNeople):
                 continue
         return {'timeline' : timeline} 
 
-class Status(PyNeopleAttributeSetter):
+class Status(PyneopleCharacter):
     """
     Neople Open API 05. 캐릭터 '능력치 정보' 조회  
     """    
     default_sub_attribute_list = STATUS_NAME.keys()
     sub_attribute_list = default_sub_attribute_list    
-    
-    def get_data(self, arg_server_id : str, arg_character_id : str):
+
+    def get_url(self, arg_server_id : str, arg_character_id : str):
         """
         캐릭터의 모험단명부터 명성 등 정보를 반환한다
             Args:
@@ -231,9 +255,19 @@ class Status(PyNeopleAttributeSetter):
                 
                 arg_character_id(str) : 캐릭터 ID  
         """
-        self._total_id = f"{arg_server_id} {arg_character_id}"
-        url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/status?apikey={self._api_key}'
-        return get_request(url)
+        return f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/status?apikey={self._api_key}' 
+
+    # def get_data(self, arg_server_id : str, arg_character_id : str):
+    #     """
+    #     캐릭터의 모험단명부터 명성 등 정보를 반환한다
+    #         Args:
+    #             arg_server_id(str) :  서버 ID  
+                
+    #             arg_character_id(str) : 캐릭터 ID  
+    #     """
+    #     self._total_id = f"{arg_server_id} {arg_character_id}"
+    #     url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/status?apikey={self._api_key}'
+    #     return get_request(url)
 
     def parse_data(self, arg_data : dict):
         """
@@ -403,24 +437,28 @@ class Weapon(Equipment):
         for sub_attribute in Weapon.sub_attribute_list:
             getattr(self, sub_attribute).get_info_data(arg_equipment_dict.get(WEAPON_NAME[sub_attribute], dict()))
             
-class Equipments(PyNeopleAttributeSetter):
+class Equipments(PyneopleCharacter):
     """
     Neople Open API 06. 캐릭터 '장착 장비' 조회
     """    
     default_sub_attribute_list = EQUIPMENT_LIST
     sub_attribute_list = default_sub_attribute_list
-    
-    def get_data(self, arg_server_id : str, arg_character_id : str):
-        """
-        영문 서버 이름과 캐릭터 ID 를 검색하면 장착 장비 정보를 반환
-            Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) cain  
-                
-                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
-        """        
-        self._total_id = f"{arg_server_id} {arg_character_id}"
+
+    def get_url(self, arg_server_id : str, arg_character_id : str):
         url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/equipment?apikey={self._api_key}'
-        return get_request(url)
+        return url
+
+    # def get_data(self, arg_server_id : str, arg_character_id : str):
+    #     """
+    #     영문 서버 이름과 캐릭터 ID 를 검색하면 장착 장비 정보를 반환
+    #         Args : 
+    #             arg_server_id(str) : 영문 서버 이름  ex) cain  
+                
+    #             arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
+    #     """        
+    #     self._total_id = f"{arg_server_id} {arg_character_id}"
+    #     url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/equipment?apikey={self._api_key}'
+    #     return get_request(url)
     
     def parse_data(self, arg_data : dict):
         """
@@ -429,7 +467,7 @@ class Equipments(PyNeopleAttributeSetter):
                 arg_data(dict) : Neople Open API 를 통해 받은 data
         """
         # 하위 속성 생성
-        
+        self.total_id = arg_data.get("total_id")
         for equipment in Equipments.sub_attribute_list:
             if equipment == 'weapon':
                 setattr(self, equipment, Weapon())
@@ -514,24 +552,27 @@ class PlatinumAvatar(Avatar):
             else:    
                 setattr(self, sub_attribute, arg_avatar_dict.get(AVATAR_NAME[sub_attribute]))
 
-class Avatars(PyNeopleAttributeSetter):
+class Avatars(PyneopleCharacter):
     """
     Neople Open API 07. 캐릭터 '장착 아바타' 조회
     """       
     default_sub_attribute_list = AVATAR_LIST
     sub_attribute_list = default_sub_attribute_list
 
-    def get_data(self, arg_server_id: str, arg_character_id : str):    
-        """
-        영문 서버 이름과 캐릭터 ID 를 검색하면 장착 아바타 정보를 반환
-            Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) cain
+    def get_url(self, arg_server_id: str, arg_character_id : str):    
+        return f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/avatar?apikey={self._api_key}' 
+
+    # def get_data(self, arg_server_id: str, arg_character_id : str):    
+    #     """
+    #     영문 서버 이름과 캐릭터 ID 를 검색하면 장착 아바타 정보를 반환
+    #         Args : 
+    #             arg_server_id(str) : 영문 서버 이름  ex) cain
                 
-                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
-        """
-        self._total_id = f"{arg_server_id} {arg_character_id}"
-        url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/avatar?apikey={self._api_key}'
-        return get_request(url)
+    #             arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
+    #     """
+    #     self._total_id = f"{arg_server_id} {arg_character_id}"
+    #     url = f'https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/avatar?apikey={self._api_key}'
+    #     return get_request(url)
 
     def parse_data(self, arg_data : dict):
         """
@@ -539,6 +580,7 @@ class Avatars(PyNeopleAttributeSetter):
             Args :
                 arg_data(dict) : Neople Open API 를 통해 받은 data
         """        
+        self.total_id = arg_data.get("total_id")
         # 하위 속성 생성
         for avatar in Avatars.sub_attribute_list:
             if avatar in PLATINUM_AVATAR_LIST:
@@ -552,47 +594,52 @@ class Avatars(PyNeopleAttributeSetter):
                 getattr(self, f'{avatar["slotId"].lower()}').get_avatar_data(avatar)
 
 
-class Creature(PyNeople):
+class Creature(PyneopleCharacter):
     """
     Neople Open API 08. 캐릭터 '장착 크리쳐' 조회
     """
-        
-    def get_data(self, arg_server_id : str, arg_character_id : str):
-        """
-        영문 서버 이름과 캐릭터 ID 를 검색하면 장착 크리쳐 정보를 반환
-            Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) cain
+    def get_url(self, arg_server_id : str, arg_character_id : str):
+        return f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/creature?apikey={self._api_key}"
+
+    # def get_data(self, arg_server_id : str, arg_character_id : str):
+    #     """
+    #     영문 서버 이름과 캐릭터 ID 를 검색하면 장착 크리쳐 정보를 반환
+    #         Args : 
+    #             arg_server_id(str) : 영문 서버 이름  ex) cain
                 
-                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
-        """
-        self._total_id = f"{arg_server_id} {arg_character_id}"
-        url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/creature?apikey={self._api_key}"
-        return get_request(url)
+    #             arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
+    #     """
+    #     self._total_id = f"{arg_server_id} {arg_character_id}"
+    #     url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/creature?apikey={self._api_key}"
+    #     return get_request(url)
     
     def parse_data(self, arg_data : dict):
         """
         데이터를 정리해서 하위 attribute에 저장
             Args :
                 arg_data(dict) : Neople Open API 를 통해 받은 data
-        """        
+        """
+        self.total_id = arg_data.get("total_id")
         self.creature = arg_data.get('creature', dict()).get('itemName')
         
-class Flag(PyNeople):
+class Flag(PyneopleCharacter):
     """
     Neople Open API 09. 캐릭터 '장착 휘장' 조회
     """
-    
-    def get_data(self, arg_server_id : str, arg_character_id : str):
-        """
-        영문 서버 이름과 캐릭터 ID 를 검색하면 장착 휘장 정보를 반환
-            Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) cain
+    def get_url(self, arg_server_id : str, arg_character_id : str):
+        return f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/flag?apikey={self._api_key}"
+
+    # def get_data(self, arg_server_id : str, arg_character_id : str):
+    #     """
+    #     영문 서버 이름과 캐릭터 ID 를 검색하면 장착 휘장 정보를 반환
+    #         Args : 
+    #             arg_server_id(str) : 영문 서버 이름  ex) cain
                 
-                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
-        """        
-        self._total_id = f"{arg_server_id} {arg_character_id}"
-        url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/flag?apikey={self._api_key}"
-        return get_request(url)
+    #             arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
+    #     """        
+    #     self._total_id = f"{arg_server_id} {arg_character_id}"
+    #     url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/flag?apikey={self._api_key}"
+    #     return get_request(url)
     
     def parse_data(self, arg_data):
         """
@@ -600,6 +647,7 @@ class Flag(PyNeople):
             Args :
                 arg_data(dict) : Neople Open API 를 통해 받은 data
         """        
+        self.total_id = arg_data.get("total_id")
         self.gem_1 = None       # 젬1 레어도
         self.gem_2 = None       # 젬2 레어도
         self.gem_3 = None       # 젬3 레어도
@@ -619,27 +667,31 @@ class Talisman():
         self.rune_1 = None
         self.rune_2 = None
         self.rune_3 = None   
+    
     def get_talisman_data(self, arg_talisman_data):
         self.item_name = arg_talisman_data.get('talisman', dict()).get('itemName')
         for i, rune in enumerate(arg_talisman_data.get('runes', list())):
             setattr(self, f'rune_{i+1}', rune.get('itemName'))        
 
-class Talismans(PyNeople):
+class Talismans(PyneopleCharacter):
     """
     Neople Open API 10. 캐릭터 '장착 탈리스만' 조회
     """ 
 
-    def get_data(self, arg_server_id : str, arg_character_id : str):
-        """
-        영문 서버 이름과 캐릭터 ID 를 검색하면 장착 탈리스만 정보를 반환
-            Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) cain
+    def get_url(self, arg_server_id : str, arg_character_id : str):
+        return f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/talisman?apikey={self._api_key}"
+
+    # def get_data(self, arg_server_id : str, arg_character_id : str):
+    #     """
+    #     영문 서버 이름과 캐릭터 ID 를 검색하면 장착 탈리스만 정보를 반환
+    #         Args : 
+    #             arg_server_id(str) : 영문 서버 이름  ex) cain
                 
-                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
-        """                
-        self._total_id = f"{arg_server_id} {arg_character_id}"
-        url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/talisman?apikey={self._api_key}"         
-        return get_request(url)
+    #             arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
+    #     """                
+    #     self._total_id = f"{arg_server_id} {arg_character_id}"
+    #     url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/talisman?apikey={self._api_key}"         
+    #     return get_request(url)
     
     def parse_data(self, arg_data : dict):
         """
@@ -647,27 +699,31 @@ class Talismans(PyNeople):
             Args :
                 arg_data(dict) : Neople Open API 를 통해 받은 data
         """        
+        self.total_id = arg_data.get("total_id")
         for i, talisman in enumerate(arg_data.get("talismans", list())):
             setattr(self, f"talisman_{i+1}", Talisman())
             getattr(self, f"talisman_{i+1}").get_talisman_data(talisman)        
 
 
-class EquipmentTrait(PyNeople):
+class EquipmentTrait(PyneopleCharacter):
     """
     Neople Open API 11. 캐릭터 '장비 특성' 조회
     """ 
 
-    def get_data(self, arg_server_id : str, arg_character_id : str):
-        """
-        영문 서버 이름과 캐릭터 ID 를 검색하면 장비 특성 정보를 반환
-            Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) cain
+    def get_url(self, arg_server_id : str, arg_character_id : str):
+        return f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/equipment-trait?apikey={self._api_key}" 
+
+    # def get_data(self, arg_server_id : str, arg_character_id : str):
+    #     """
+    #     영문 서버 이름과 캐릭터 ID 를 검색하면 장비 특성 정보를 반환
+    #         Args : 
+    #             arg_server_id(str) : 영문 서버 이름  ex) cain
                 
-                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
-        """                
-        self._total_id = f"{arg_server_id} {arg_character_id}"
-        url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/equipment-trait?apikey={self._api_key}"
-        return get_request(url)
+    #             arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
+    #     """                
+    #     self._total_id = f"{arg_server_id} {arg_character_id}"
+    #     url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/equip/equipment-trait?apikey={self._api_key}"
+    #     return get_request(url)
     
     def parse_data(self, arg_data : dict):
         """
@@ -675,7 +731,7 @@ class EquipmentTrait(PyNeople):
             Args :
                 arg_data(dict) : Neople Open API 를 통해 받은 data  
         """
-
+        self.total_id = arg_data.get("total_id")
         self.total_point = arg_data.get("equipmentTrait", dict()).get("total", dict()).get("point")
         self.category_name = arg_data.get("equipmentTrait", dict()).get("category", dict()).get("name")
         self.strong_hit_level = 0
@@ -689,22 +745,25 @@ class EquipmentTrait(PyNeople):
                 self.meditation_level = option.get("level")
 
 
-class SkillStyle(PyNeople):
+class SkillStyle(PyneopleCharacter):
     """
     Neople Open API 12. 캐릭터 '스킬 스타일' 조회
     """ 
 
-    def get_data(self, arg_server_id : str, arg_character_id : str):
-        """
-        영문 서버 이름과 캐릭터 ID 를 검색하면 스킬 스타일 정보를 반환
-            Args : 
-                arg_server_id(str) : 영문 서버 이름  ex) cain
+    def get_url(self, arg_server_id : str, arg_character_id : str):
+        return f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/style?apikey={self._api_key}" 
+
+    # def get_data(self, arg_server_id : str, arg_character_id : str):
+    #     """
+    #     영문 서버 이름과 캐릭터 ID 를 검색하면 스킬 스타일 정보를 반환
+    #         Args : 
+    #             arg_server_id(str) : 영문 서버 이름  ex) cain
                 
-                arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
-        """                
-        self._total_id = f"{arg_server_id} {arg_character_id}"
-        url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/style?apikey={self._api_key}"
-        return get_request(url)
+    #             arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
+    #     """                
+    #     self._total_id = f"{arg_server_id} {arg_character_id}"
+    #     url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/style?apikey={self._api_key}"
+    #     return get_request(url)
 
     def parse_data(self, arg_data : dict):
         """
@@ -712,7 +771,7 @@ class SkillStyle(PyNeople):
             Args :
                 arg_data(dict) : Neople Open API 를 통해 받은 data  
         """        
-
+        self.total_id = arg_data.get("total_id")
         self.skill_code = arg_data.get("skill", dict()).get("hash")
 
 class BuffAvatar():
@@ -760,14 +819,18 @@ class Buff(PyNeople):
                 
                 arg_character_name(str) : 캐릭터 ID ex) d018e5f7e7519e34b8ef21db0c40fd98
         """   
-        self._total_id = f"{arg_server_id} {arg_character_id}"
+        # self._total_id = f"{arg_server_id} {arg_character_id}"
         buff_info_dict = {}     
-        buff_equipment_data = get_request(f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/buff/equip/equipment?apikey={self._api_key}")
-        buff_avatar_data = get_request(f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/buff/equip/avatar?apikey={self._api_key}")
-        buff_creature_data = get_request(f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/buff/equip/creature?apikey={self._api_key}")
+        
+        buff_equipment_data = asyncio.run(async_get_request(f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/buff/equip/equipment?apikey={self._api_key}"))
+        buff_avatar_data = asyncio.run(async_get_request(f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/buff/equip/avatar?apikey={self._api_key}"))
+        buff_creature_data = asyncio.run(async_get_request(f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/buff/equip/creature?apikey={self._api_key}"))
+        # buff_avatar_data = get_request(f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/buff/equip/avatar?apikey={self._api_key}")
+        # buff_creature_data = get_request(f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters/{arg_character_id}/skill/buff/equip/creature?apikey={self._api_key}")
         buff_info_dict["equipment"] = buff_equipment_data
         buff_info_dict["avatar"] = buff_avatar_data
         buff_info_dict["creature"] = buff_creature_data
+        buff_info_dict['total_id'] = f"{SERVER_ID_2_TOTAL_ID[arg_server_id]}{arg_character_id}"
         return buff_info_dict
 
     def parse_data(self, arg_data : dict):
@@ -777,19 +840,21 @@ class Buff(PyNeople):
                 arg_data(dict) : Neople Open API 를 통해 받은 data
         """         
         # 하위 속성 생성
+        self.total_id = arg_data.get('total_id')
         self.buff_level = None
         self.buff_desc = None
         for equipment in EQUIPMENT_LIST:
-            setattr(self, f"self.buff_equipment_{equipment}", None)
+            setattr(self, f"equipment_{equipment}", None)
         for avatar in list(set(AVATAR_LIST) - set(PLATINUM_AVATAR_LIST)):
-            setattr(self, f"self.buff_avatar_{avatar}", BuffAvatar())
+            setattr(self, f"avatar_{avatar}", BuffAvatar())
         for avatar in PLATINUM_AVATAR_LIST:
-            setattr(self, f"self.buff_avatar_{avatar}", BuffPlatimun())
-        self.buff_creature = None  
+            # print(avatar)
+            setattr(self, f"avatar_{avatar}", BuffPlatimun())
         
-        arg_data["equipment"] = arg_buff_equipment_data
-        arg_data["avatar"] = arg_buff_avatar_data
-        arg_data["creature"] = arg_buff_creature_data
+        self.buff_creature = None  
+        arg_buff_equipment_data = arg_data["equipment"]
+        arg_buff_avatar_data = arg_data["avatar"]
+        arg_buff_creature_data = arg_data["creature"]
 
         if arg_buff_equipment_data.get("skill", dict()).get('buff'):
             arg_buff_equipment_data = arg_buff_equipment_data.get("skill", dict()).get('buff')
@@ -860,5 +925,5 @@ class CharacterFame(PyNeople):
                 arg_limit(int) : 반환 Row 수
         """
         url = f"https://api.neople.co.kr/df/servers/{arg_server_id}/characters-fame?minFame={arg_min_fame}&maxFame={arg_max_fame}&jobId={arg_job_id}&jobGrowId={arg_job_grow_id}&isAllJobGrow={arg_is_all_job_grow}&isBuff={arg_is_buff}&limit={arg_limit}&apikey={self._api_key}"
-        return get_request(url)
+        return asyncio.run(async_get_request(url))
     

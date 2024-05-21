@@ -19,6 +19,20 @@ SERVER_NAME_2_ID = {
 # 서버 ID 가 key NAME 이 value
 SERVER_ID_2_NAME = {v : k for k , v in SERVER_NAME_2_ID.items()}
 
+# 서버 ID 가 total_id에 저장되는 값
+SERVER_ID_2_TOTAL_ID = {
+    'anton': 'a',
+    'bakal': 'b',
+    'cain': 'c',
+    'casillas': 'k',
+    'diregie': 'd',
+    'hilder': 'h',
+    'prey': 'p',
+    'siroco': 's'
+    }
+
+TOTAL_ID_2_SERVER_ID = {v : k for k , v in SERVER_ID_2_TOTAL_ID.items()}
+
 # 서버 ID 문자열 길이의 최대값
 SERVERLENGTH = max(list(map(lambda x : len(x), list(SERVER_NAME_2_ID.values()))))
 
@@ -76,6 +90,7 @@ CHARACTER_SEARCH_NAME = {
 
 # CharacterInformation 에서 선택 가능한 변수
 CHARACTER_INFORMATION_NAME = {
+    'total_id' : 'total_id',
     'character_id': 'characterId',
     'character_name': 'characterName',
     'level': 'level',
@@ -88,6 +103,7 @@ CHARACTER_INFORMATION_NAME = {
 
 # Status 에서 선택 가능한 변수
 STATUS_NAME = {
+    'total_id' : 'total_id',
     'character_id': 'characterId',
     'character_name': 'characterName',
     'level': 'level',

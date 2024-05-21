@@ -4,9 +4,10 @@ pyneople에서 사용되는 함수와 클래스입니다.
 
 import time
 import json
+import aiohttp
+import asyncio  
 import requests
-from .METADATA import JOBCLASS
-from .METADATA import SETTINGS
+from .METADATA import JOBCLASS, SETTINGS, TOTAL_ID_2_SERVER_ID
 
 __all__ = ['change_settings', 'get_request', 'jobname_equalize', 'get_job_info', 'NeopleOpenAPIError', 'ServerMaintenanceError', 'value_flatten', 'attr_flatten']
 
@@ -58,6 +59,24 @@ def get_request(arg_url : str):
         time.sleep(SETTINGS['request_time_sleep'] - elapsed_time)
     return data
 
+async def async_get_request(arg_url : str):
+    """
+    url 입력시 data 가져오는 함수
+        Args :
+            arg_url(str) : 원하는 url 주소
+    """
+    async with aiohttp.ClientSession(timeout = aiohttp.ClientTimeout(total=SETTINGS['request_time_out'])) as session:
+        # print(f"요청{time.time()}")
+        async with session.get(arg_url) as response:
+            await asyncio.sleep(SETTINGS['request_time_sleep'])
+            data = await response.json()
+            if data.get("error"):
+                if data.get("error").get('status') == 503:
+                    raise ServerMaintenanceError
+                else:
+                    raise NeopleOpenAPIError(data.get("error"))
+            return data
+
 def _next(arg_dict : dict, arg_list : list):
     """
     get_job_info 함수를 위해 쓰이는 함수
@@ -69,6 +88,8 @@ def _next(arg_dict : dict, arg_list : list):
         arg_list.append(arg_dict["jobGrowName"])
         return arg_dict["jobGrowName"]
 
+def split_total_id(arg_total_id):
+    return TOTAL_ID_2_SERVER_ID[arg_total_id[:1]], arg_total_id[1:]
 
 def get_job_info(arg_api_key : str):
     """

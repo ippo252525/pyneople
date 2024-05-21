@@ -518,5 +518,3 @@ def mongodb_to_postgresql(arg_postgresql_connecter : PostgreSQLConnecter,
     arg_mongo_client.close()
     postgresql_cursor.close()
     print("done")    
-
-            
