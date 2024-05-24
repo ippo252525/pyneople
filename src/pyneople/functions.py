@@ -66,7 +66,7 @@ async def async_get_request(arg_url : str):
             arg_url(str) : 원하는 url 주소
     """
     async with aiohttp.ClientSession(timeout = aiohttp.ClientTimeout(total=SETTINGS['request_time_out'])) as session:
-        # print(f"요청{time.time()}")
+        print(f"요청{time.time()}")
         async with session.get(arg_url) as response:
             await asyncio.sleep(SETTINGS['request_time_sleep'])
             data = await response.json()

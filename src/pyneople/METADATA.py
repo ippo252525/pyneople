@@ -67,10 +67,10 @@ JOB_NAME_LENGTH = max(list(map(lambda x : len(x), list(JOBCLASS.keys()))))
 del jobclass_list
 
 # 착용가능 장비
-EQUIPMENT_LIST = ['weapon', 'title', 'jacket', 'shoulder', 'pants', 'shoes', 'waist', 'amulet', 'wrist', 'ring', 'support', 'magic_ston', 'earring', 'set_item_info']
+EQUIPMENT_LIST = ['total_id', 'weapon', 'title', 'jacket', 'shoulder', 'pants', 'shoes', 'waist', 'amulet', 'wrist', 'ring', 'support', 'magic_ston', 'earring', 'set_item_info']
 
 # 착용가능 아바타
-AVATAR_LIST = ['headgear', 'hair', 'face', 'jacket', 'pants', 'shoes', 'breast', 'waist', 'skin', 'aurora', 'weapon']
+AVATAR_LIST = ['total_id', 'headgear', 'hair', 'face', 'jacket', 'pants', 'shoes', 'breast', 'waist', 'skin', 'aurora', 'weapon']
 
 # 플래티넘 엠블렘 착용 가능 부위
 PLATINUM_AVATAR_LIST = ['jacket', 'pants']

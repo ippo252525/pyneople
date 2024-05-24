@@ -67,6 +67,7 @@ class PyneopleCharacter(PyNeopleAttributeSetter):
     def get_data(self, arg_server_id : str, arg_character_id : str):
         url = self.get_url(arg_server_id, arg_character_id)
         data = asyncio.run(async_get_request(url))
+        print("처리")
         data['total_id'] = f"{SERVER_ID_2_TOTAL_ID[arg_server_id]}{arg_character_id}"
         return data
     
@@ -475,6 +476,8 @@ class Equipments(PyneopleCharacter):
                 setattr(self, equipment, BaseEquipment())
             elif equipment == 'set_item_info':
                 setattr(self, equipment, None)
+            elif equipment == 'total_id':
+                setattr(self, equipment, None)
             else:
                 setattr(self, equipment, Equipment())
                 
@@ -844,7 +847,10 @@ class Buff(PyNeople):
         self.buff_level = None
         self.buff_desc = None
         for equipment in EQUIPMENT_LIST:
-            setattr(self, f"equipment_{equipment}", None)
+            if equipment == 'total_id':
+                continue
+            else:
+                setattr(self, f"equipment_{equipment}", None)
         for avatar in list(set(AVATAR_LIST) - set(PLATINUM_AVATAR_LIST)):
             setattr(self, f"avatar_{avatar}", BuffAvatar())
         for avatar in PLATINUM_AVATAR_LIST:
