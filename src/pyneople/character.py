@@ -67,6 +67,7 @@ class PyneopleCharacter(PyNeopleAttributeSetter):
     def get_data(self, arg_server_id : str, arg_character_id : str):
         url = self.get_url(arg_server_id, arg_character_id)
         data = asyncio.run(async_get_request(url))
+        # data = get_request(url)
         print("처리")
         data['total_id'] = f"{SERVER_ID_2_TOTAL_ID[arg_server_id]}{arg_character_id}"
         return data
@@ -102,7 +103,8 @@ class CharacterSearch(PyNeopleAttributeSetter):
         url = self.get_url(arg_server_name, arg_character_name)
         # parse_data에 매개변수로 사용 될 것을 생각해서 dict를 받을 수 있도록 정보 다듬어서 제공
         try:
-            data = asyncio.run(async_get_request(url)).get("rows")
+            # data = asyncio.run(async_get_request(url)).get("rows")
+            data = get_request(url).get("rows")
             if data:
                 return data[0]
             else:

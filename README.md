@@ -110,7 +110,7 @@ from pyneople.database_connecter import PostgreSQLConnecter
 pg_dict = {
     'host' : 'localhost', 
     'user' : 'dnfdba', 
-    'password':'1557', 
+    'password':'1234', 
     'database':'dnf'
 }
 pg_connecter = PostgreSQLConnecter(pg_dict)
