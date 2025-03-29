@@ -5,7 +5,7 @@ import asyncio
 import datetime
 import urllib.parse
 from typing import Union
-from .functions import get_request, async_get_request, explain_enchant, NeopleOpenAPIError
+from utils.functions import get_request, async_get_request, explain_enchant, NeopleOpenAPIError
 from .METADATA import SERVER_NAME_2_ID, CHARACTER_SEARCH_NAME, \
                     CHARACTER_INFORMATION_NAME, STATUS_NAME, EQUIPMENT_LIST, AVATAR_LIST, PLATINUM_AVATAR_LIST, \
                     BASE_EQUIPMENT_NAME, EQUIPMENT_NAME, WEAPON_NAME, AVATAR_NAME, PLATINUM_AVATAR_NAME, GROWINFO_NAME, SERVER_ID_2_TOTAL_ID

@@ -1,5 +1,7 @@
 def process_fame_api_request(data : dict, api_request : dict) -> dict:
-    """파라미터dict를 받으면 결과 값에 따라서 다음 파라피터를 넣는 함수"""
+    """
+    15. 캐릭터 명성 검색을 위해 다음 api_request_params를 생성하는 함수
+    """
     
     if len(data['rows']) >= 200:
         # 200개는 제일 작은 값부터 다시 조회
@@ -18,6 +20,9 @@ def process_fame_api_request(data : dict, api_request : dict) -> dict:
         return api_request
 
 def process_timeline_api_request():     
+    """
+    04. 캐릭터 타임라인 조회를 위해 다음 api_request_params를 생성하는 함수
+    """
     return {}
 
 NEXT_ENDPOINT = {

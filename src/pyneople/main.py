@@ -1,30 +1,45 @@
 import asyncio
 import aiohttp
-from worker.worker import URLFetcherWorker
+from workers.api_fetch_worker import APIFetchWorker
+from workers.mongo_store_worker import MongoStoreWorker
+from motor.motor_asyncio import AsyncIOMotorClient
+from workers.seeder import seed_character_fame_api_request_queue
 
-NUM_WORKERS = 10
-apikey = 1
+mongo_client = AsyncIOMotorClient("mongodb://localhost:27017")
+db = mongo_client["dnf_database"]
+NUM_API_FETCH_WORKERS = 100
+NUM_MONGO_STORE_WORKERS = 10
 async def main():
     api_request_queue = asyncio.Queue()
     data_queue = asyncio.Queue()
 
     async with aiohttp.ClientSession() as session:
         # 여러 개의 워커 생성
-        workers = [URLFetcherWorker(api_request_queue, data_queue, session) for _ in range(NUM_WORKERS)]
-        
+        api_fetch_workers = [APIFetchWorker(api_request_queue, data_queue, session) for _ in range(NUM_API_FETCH_WORKERS)]
+        mongo_store_workers = [MongoStoreWorker(data_queue, db) for _ in range(NUM_MONGO_STORE_WORKERS)]
         # 워커 태스크 실행
-        worker_tasks = [asyncio.create_task(worker.worker()) for worker in workers]
-
-        await api_request_queue.put({"endpoint": "character_fame", "params": {"maxFame": 1000, 'apikey' : {apikey}}})
-        print('초기 값 put 완료')
+        api_fetch_worker_tasks = [asyncio.create_task(worker.run()) for worker in api_fetch_workers]
+        mongo_store_worker_tasks = [asyncio.create_task(worker.run()) for worker in mongo_store_workers]
+        await seed_character_fame_api_request_queue(api_request_queue, 10000)
+        print('\r초기 값 put 완료', end="", flush=True)
 
         # 모든 작업이 끝날 때까지 대기
         await api_request_queue.join()
-        print('모든 작업 종료 완료')
+        print('\r모든 작업 종료 완료', end="", flush=True)
 
-        for _ in range(NUM_WORKERS):        
+        for _ in range(NUM_API_FETCH_WORKERS):        
             await api_request_queue.put(None)   
+        print('api None 삽입 완료')
         
-        await asyncio.gather(*worker_tasks)
+        await data_queue.join()
+        print("data queue 완료")
+        
+        for _ in range(NUM_API_FETCH_WORKERS):        
+            await data_queue.put(None)        
+        
+        await asyncio.gather(*api_fetch_worker_tasks)
+        print('api gather 완료')
+
+        await asyncio.gather(*mongo_store_worker_tasks)
 
 asyncio.run(main())
