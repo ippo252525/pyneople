@@ -6,7 +6,7 @@ import datetime
 import urllib.parse
 from typing import Union
 from utils.functions import get_request, async_get_request, explain_enchant, NeopleOpenAPIError
-from .METADATA import SERVER_NAME_2_ID, CHARACTER_SEARCH_NAME, \
+from config.METADATA import SERVER_NAME_TO_ID, CHARACTER_SEARCH_NAME, \
                     CHARACTER_INFORMATION_NAME, STATUS_NAME, EQUIPMENT_LIST, AVATAR_LIST, PLATINUM_AVATAR_LIST, \
                     BASE_EQUIPMENT_NAME, EQUIPMENT_NAME, WEAPON_NAME, AVATAR_NAME, PLATINUM_AVATAR_NAME, GROWINFO_NAME, SERVER_ID_2_TOTAL_ID
 
@@ -64,14 +64,6 @@ class PyNeopleAttributeSetter(PyNeople):
 
 class PyneopleCharacter(PyNeopleAttributeSetter):
     
-    def get_data(self, arg_server_id : str, arg_character_id : str):
-        url = self.get_url(arg_server_id, arg_character_id)
-        data = asyncio.run(async_get_request(url))
-        # data = get_request(url)
-        print("처리")
-        data['total_id'] = f"{SERVER_ID_2_TOTAL_ID[arg_server_id]}{arg_character_id}"
-        return data
-    
     def parse_data(self, arg_data : dict):
         self.total_id = arg_data.get('total_id')
                 
@@ -81,36 +73,6 @@ class CharacterSearch(PyNeopleAttributeSetter):
     """
     default_sub_attribute_list = CHARACTER_SEARCH_NAME.keys()
     sub_attribute_list = default_sub_attribute_list
-
-    def get_url(self, arg_server_name : str, arg_character_name : str):
-        if arg_server_name in SERVER_NAME_2_ID.keys():
-            arg_server_name = SERVER_NAME_2_ID[arg_server_name]
-        elif arg_server_name in SERVER_NAME_2_ID.values():
-            pass
-        else:
-            raise ValueError("서버 이름을 확인하시오")
-        self._server_id = arg_server_name
-        return f"https://api.neople.co.kr/df/servers/{arg_server_name}/characters?characterName={urllib.parse.quote(arg_character_name)}&limit=1&apikey={self._api_key}"
-    
-    def get_data(self, arg_server_name : str, arg_character_name : str):
-        """
-        서버 이름과 캐릭터 이름을 검색하면 기본 정보를 반환
-            Args : 
-                arg_server_name(str) : 서버 이름  ex) 디레지에, cain  
-                
-                arg_character_name(str) : 캐릭터 이름 ex) 홍길동
-        """
-        url = self.get_url(arg_server_name, arg_character_name)
-        # parse_data에 매개변수로 사용 될 것을 생각해서 dict를 받을 수 있도록 정보 다듬어서 제공
-        try:
-            # data = asyncio.run(async_get_request(url)).get("rows")
-            data = get_request(url).get("rows")
-            if data:
-                return data[0]
-            else:
-                raise NeopleOpenAPIError("{'status': 404, 'code': 'DNF001', 'message': 'NOT_FOUND_CHARACTER'}")
-        except IndexError:
-            return dict()
 
     def parse_data(self, arg_data : dict):
         """
@@ -377,7 +339,7 @@ class Equipment(BaseEquipment):
                 elif arg_equipment_dict.get('refinedMistGear'):
                     setattr(self, sub_attribute, 'refined_mistgear')
                 else :
-                    pass                
+                    pass
             elif sub_attribute == 'grow_info':
                 if arg_equipment_dict.get("customOption"):
                     getattr(self, sub_attribute).get_grow_info_data(arg_equipment_dict.get('customOption'))

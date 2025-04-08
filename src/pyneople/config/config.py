@@ -1,0 +1,4 @@
+MONGO_URL = 'mongodb://localhost:27017'
+MONGODB_NAME = 'dnf_database'
+NUM_API_FETCH_WORKERS = 100
+NUM_MONGO_STORE_WORKERS = 10

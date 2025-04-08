@@ -14,7 +14,7 @@ API_ENDPOINTS = {
             'jobGrowId' : '',
             'isAllJobGrow' : 'false', 
             'wordType' : 'match', 
-            'limit' : 10
+            'limit' : 1
         }
     },
 

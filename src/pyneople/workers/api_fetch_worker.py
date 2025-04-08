@@ -1,6 +1,7 @@
 import asyncio
 import aiohttp
-from wrapper.url_builder import build_url
+from datetime import datetime, timezone
+from api.url_builder import build_url
 from .api_processors import process_api_request, NEXT_ENDPOINT
 
 class APIFetchWorker:
@@ -35,11 +36,13 @@ class APIFetchWorker:
                             print('\r추가 url put완료', end="", flush=True)
                         else:
                             print('\r추가 url 없음', end="", flush=True)
-                    
+                    data.update({'fetched_at' : datetime.now(timezone.utc)})
                     data = {'collection' : api_request['endpoint'], 'data' : data}
                     await self.data_queue.put(data)
+                
                 except:
-                    print('오류발생')                    
+                    print('오류발생')
+                    
                 finally:
                     self.api_request_queue.task_done()        
             

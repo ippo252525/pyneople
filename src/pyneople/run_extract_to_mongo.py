@@ -3,13 +3,18 @@ import aiohttp
 from workers.api_fetch_worker import APIFetchWorker
 from workers.mongo_store_worker import MongoStoreWorker
 from motor.motor_asyncio import AsyncIOMotorClient
-from workers.seeder import seed_character_fame_api_request_queue
+from workers.seeder import SEEDERS
 
-mongo_client = AsyncIOMotorClient("mongodb://localhost:27017")
-db = mongo_client["dnf_database"]
+MONGO_URL = 'mongodb://localhost:27017'
+MONGODB_NAME = 'dnf_database'
 NUM_API_FETCH_WORKERS = 100
 NUM_MONGO_STORE_WORKERS = 10
-async def main():
+
+mongo_client = AsyncIOMotorClient(MONGO_URL)
+db = mongo_client[MONGODB_NAME]
+
+async def main(seed_type, **seed_kwargs):
+    seed_function = SEEDERS.get(seed_type)
     api_request_queue = asyncio.Queue()
     data_queue = asyncio.Queue()
 
@@ -20,7 +25,7 @@ async def main():
         # 워커 태스크 실행
         api_fetch_worker_tasks = [asyncio.create_task(worker.run()) for worker in api_fetch_workers]
         mongo_store_worker_tasks = [asyncio.create_task(worker.run()) for worker in mongo_store_workers]
-        await seed_character_fame_api_request_queue(api_request_queue, 10000)
+        await seed_function(api_request_queue, **seed_kwargs)
         print('\r초기 값 put 완료', end="", flush=True)
 
         # 모든 작업이 끝날 때까지 대기
@@ -42,4 +47,4 @@ async def main():
 
         await asyncio.gather(*mongo_store_worker_tasks)
 
-asyncio.run(main())
+asyncio.run(main('character_fame', max_fame = 10000))
