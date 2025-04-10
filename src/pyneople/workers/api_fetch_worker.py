@@ -37,7 +37,7 @@ class APIFetchWorker:
                         else:
                             print('\r추가 url 없음', end="", flush=True)
                     data.update({'fetched_at' : datetime.now(timezone.utc)})
-                    data = {'collection' : api_request['endpoint'], 'data' : data}
+                    data = {'endpoint' : api_request['endpoint'], 'data' : data}
                     await self.data_queue.put(data)
                 
                 except:
