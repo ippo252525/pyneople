@@ -1,20 +1,40 @@
 import asyncio
 import aiohttp
+import asyncpg
+
 from workers.api_fetch_worker import APIFetchWorker
 from workers.mongo_store_worker import MongoStoreWorker
 from motor.motor_asyncio import AsyncIOMotorClient
 from workers.seeder import SEEDERS
+from config.METADATA import SEED_TYPES_REQUIRING_PSQL_POOL
+import config.config as config
 
 MONGO_URL = 'mongodb://localhost:27017'
 MONGODB_NAME = 'dnf_database'
 MONGO_COLLECTION_NAME = 'dnf_collection'
-NUM_API_FETCH_WORKERS = 100
+NUM_API_FETCH_WORKERS = 10
 NUM_MONGO_STORE_WORKERS = 10
 
 mongo_client = AsyncIOMotorClient(MONGO_URL)
 db = mongo_client[MONGODB_NAME][MONGO_COLLECTION_NAME]
 
+async def count_requests_per_second():
+    while True:
+        await asyncio.sleep(1)
+        print(f"초당 요청 수: {config.request_count}")
+        config.request_count = 0
+
 async def main(seed_type, **seed_kwargs):
+    asyncio.create_task(count_requests_per_second())
+    if seed_type in SEED_TYPES_REQUIRING_PSQL_POOL:
+        psql_pool = await asyncpg.create_pool(
+                user="pyneople",
+                password='252525',
+                database="dnf",
+                host="localhost",
+                port=5432
+            )
+        seed_kwargs['psql_pool'] = psql_pool    
     seed_function = SEEDERS.get(seed_type)
     api_request_queue = asyncio.Queue()
     data_queue = asyncio.Queue()
@@ -50,4 +70,10 @@ async def main(seed_type, **seed_kwargs):
 
         await asyncio.gather(*mongo_store_worker_tasks)
 
-asyncio.run(main('character_fame', max_fame = 10000))
+
+sql = """
+SELECT character_id, server_id 
+FROM characters
+LIMIT 10000;
+"""
+asyncio.run(main('character_timeline', sql = sql))

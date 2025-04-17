@@ -5,3 +5,4 @@ labo.py
 *.ipynb
 apikey.py
 test.py
+.env

@@ -2,7 +2,6 @@ def process_fame_api_request(data : dict, api_request : dict) -> dict:
     """
     15. 캐릭터 명성 검색을 위해 다음 api_request_params를 생성하는 함수
     """
-    
     if len(data['rows']) >= 200:
         # 200개는 제일 작은 값부터 다시 조회
         api_request['params']['maxFame'] = data['rows'][-1]['fame']
@@ -19,11 +18,18 @@ def process_fame_api_request(data : dict, api_request : dict) -> dict:
     else:
         return api_request
 
-def process_timeline_api_request():     
+def process_timeline_api_request(data : dict, api_request : dict) -> dict: 
     """
     04. 캐릭터 타임라인 조회를 위해 다음 api_request_params를 생성하는 함수
     """
-    return {}
+    # print('호출')
+    # next가 있는 경우 next를 추가하고 아니면 None반환
+    if data['timeline']['next']:
+        api_request['params']['next'] = data['timeline']['next']
+        return api_request
+    else:
+        return None    
+
 
 NEXT_ENDPOINT = {
     'character_fame' : process_fame_api_request,
@@ -31,4 +37,5 @@ NEXT_ENDPOINT = {
 }
 
 def process_api_request(data : dict, api_request : dict) -> dict:
+    # print('ddddddddd')
     return NEXT_ENDPOINT[api_request['endpoint']](data, api_request)

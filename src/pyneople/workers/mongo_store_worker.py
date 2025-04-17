@@ -75,7 +75,7 @@ class MongoStoreWorker:
             if len(batch) >= self.batch_size:
                 try:
                     await self.mongo_collection.insert_many(batch)
-                    print(f"Inserted batch of {len(batch)}")
+                    # print(f"Inserted batch of {len(batch)}")
                 except Exception as e:
                     print(f"Insert failed: {e}")
                 finally:
