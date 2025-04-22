@@ -4,7 +4,7 @@ CREATE TABLE character_timelines (
     server_id VARCHAR(32) NOT NULL,
     timeline_code INT NOT NULL,
     timeline_date TIMESTAMP WITH TIME ZONE NOT NULL,
-    timeline_data JSONB NOT NULL,
+    timeline_data JSONB ,
     fetched_at TIMESTAMP WITH TIME ZONE NOT NULL,
 
     FOREIGN KEY (character_id, server_id)

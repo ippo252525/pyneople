@@ -1,4 +1,4 @@
-from api.parser import prepro_chcaracter_fame, prepro_character_timeline, prepro_chcaracter_info
+from pyneople.api.parser import prepro_character_fame, prepro_character_timeline, prepro_chcaracter_info
 
 ENDPOINT_TO_STAGING_TABLE_NAME = {
     "character_fame" : "staging_characters",
@@ -7,7 +7,7 @@ ENDPOINT_TO_STAGING_TABLE_NAME = {
 }
 
 ENDPOINT_TO_PREPROCESS = {
-    'character_fame' : prepro_chcaracter_fame,
+    'character_fame' : prepro_character_fame,
     'character_info' : prepro_chcaracter_info,
     'character_timeline' : prepro_character_timeline
 }

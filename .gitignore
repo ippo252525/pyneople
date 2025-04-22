@@ -1,8 +1,31 @@
+# Python 기본
+__pycache__/
+*.pyc
+
+# 테스트
 tests/
 pytest_cache/
-__pycache__
+
+# 개발용
 labo.py
-*.ipynb
-apikey.py
 test.py
+apikey.py
+*.ipynb
 .env
+
+# 빌드 아티팩트
+build/
+dist/
+*.egg-info/
+
+# 문서 빌드 결과 (docs/_build 폴더)
+docs/_build/
+
+# 시스템 파일
+.DS_Store
+
+# 로그 파일
+*.log
+
+# 타입 체크 캐시
+.mypy_cache/

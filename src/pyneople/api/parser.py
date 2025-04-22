@@ -1,9 +1,12 @@
 import re
 import json
 from typing import Dict, List, Any
-from config.METADATA import CHARACTER_INFO_KEYS
+from pyneople.api.METADATA import CHARACTER_INFO_KEYS
 from datetime import datetime
 from zoneinfo import ZoneInfo
+
+KST = ZoneInfo('Asia/Seoul')
+UTC = ZoneInfo('UTC')
 
 def extract_character_info(data : dict):
     data = data['data']
@@ -19,7 +22,7 @@ def convert_selected_keys_to_snake_case(d: Dict[str, Any], target_keys: List[str
             result[to_snake_case(k)] = v
     return result
 
-def prepro_chcaracter_fame(data : dict, columns : list = ['characterId', 'serverId', 'characterName', 'level', 'jobName', 'jobGrowName', 'fame']):
+def prepro_character_fame(data : dict, columns : list = ['characterId', 'serverId', 'characterName', 'level', 'jobName', 'jobGrowName', 'fame']):
     fetched_at = data['fetched_at'].replace(tzinfo=ZoneInfo("UTC"))
     data = data['rows']
     base_info_dict = {'fetched_at' : fetched_at}
@@ -40,7 +43,7 @@ def prepro_character_timeline(data : dict):
     data = data['timeline']['rows']
     data = [{f'timeline_{k}': v for k, v in character_timeline.items() if k != 'name'} for character_timeline in data]
     for character_timeline in data:
-        character_timeline['timeline_date'] = datetime.strptime(character_timeline['timeline_date'], '%Y-%m-%d %H:%M').replace(tzinfo=ZoneInfo('Asia/Seoul')).astimezone(ZoneInfo('UTC'))
+        character_timeline['timeline_date'] = datetime.strptime(character_timeline['timeline_date'], '%Y-%m-%d %H:%M').replace(tzinfo=KST).astimezone(UTC)
         character_timeline['timeline_data'] = json.dumps(character_timeline['timeline_data'])
         
     data = [{**character_timeline, **base_info_dict} for character_timeline in data]

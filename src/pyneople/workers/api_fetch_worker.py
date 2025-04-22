@@ -1,55 +1,112 @@
 import asyncio
 import aiohttp
 from datetime import datetime, timezone
-from api.url_builder import build_url
-from .api_processors import process_api_request, NEXT_ENDPOINT
-import config.config as config
+from motor.motor_asyncio import AsyncIOMotorCollection
+from pyneople.api.url_builder import build_url
+from pyneople.api.api_processors import process_api_request, NEXT_ENDPOINT
+from pyneople.config.config import Settings
+from pyneople.utils.functions import NotFoundCharacterError
+
 class APIFetchWorker:
     
-    def __init__(self, api_request_queue: asyncio.Queue, data_queue: asyncio.Queue, session : aiohttp.ClientSession):
+    def __init__(self, api_request_queue: asyncio.Queue, 
+                 data_queue: asyncio.Queue, 
+                 session : aiohttp.ClientSession, 
+                 shutdown_event : asyncio.Event, 
+                 error_collection : AsyncIOMotorCollection,
+                 max_retries : int = Settings.DEFAULT_MAX_RETRIES):
         self.api_request_queue = api_request_queue
         self.data_queue = data_queue
         self.session = session
-
+        self.shutdown_event = shutdown_event
+        self.error_collection = error_collection
+        self.max_retries = max_retries
+    
     async def run(self):
         
         while True:
-            
-            api_request =  await self.api_request_queue.get()
-            
-            if api_request:
-                url = build_url(api_request)
-                config.request_count += 1
-                try:
-                    # print(f'url : {url}')
-                    
-                    async with self.session.get(url) as response:
-                        # print('세션 들어옴')
-                        data = await response.json()
-                    # print(f"\r{api_request['params']['maxFame']}데이터 확보 완료", end="", flush=True)
-
-                    
-                    if api_request['endpoint'] in NEXT_ENDPOINT.keys():
-                        next_parameter = process_api_request(data, api_request)
-                        # print(next_parameter)
-                        # print(f"{next_parameter}다음 url 생성 완료")
-                        if next_parameter:
-                            await self.api_request_queue.put(next_parameter)
-                            # print('추가 url put완료')
-                        else:
-                            pass
-                            # print('추가 url 없음')
-                    data.update({'fetched_at' : datetime.now(timezone.utc)})
-                    data = {'endpoint' : api_request['endpoint'], 'data' : data}
-                    await self.data_queue.put(data)
-                
-                except Exception as e:
-                    print(f'오류발생 {e}')
-                    
-                finally:
-                    self.api_request_queue.task_done()        
-            
-            else:
-                print('\r워커 탈출', end="", flush=True)
-                self.api_request_queue.task_done()
+            print('\r' + ' ' * 40 + '\r', end='', flush=True)
+            print(f'\rapi queue : {self.api_request_queue.qsize()}, data queue : {self.data_queue.qsize()}', end="", flush=True)
+            if self.shutdown_event.is_set():
+                print("Shutdown 이벤트 감지됨, queue flush 시작")
+                await self.flush_queue()
                 break
+
+            try:
+                api_request = await asyncio.wait_for(self.api_request_queue.get(), timeout=Settings.DEFAULT_TIMEOUT)
+            except asyncio.TimeoutError:
+                continue
+            
+            try:
+                data = await self.fetch_with_retries(api_request)
+                if api_request['endpoint'] in NEXT_ENDPOINT.keys():
+                    next_parameter = process_api_request(data, api_request)
+                    if next_parameter:
+                        await self.api_request_queue.put(next_parameter)
+                    else:
+                        pass
+                data.update({'fetched_at' : datetime.now(timezone.utc)})
+                data = {'endpoint' : api_request['endpoint'], 'data' : data}
+                await self.data_queue.put(data)
+                
+            except (asyncio.TimeoutError, NotFoundCharacterError):
+                pass
+            except Exception as e:
+                self.shutdown_event.set()
+                await self.flush_queue()
+                break
+            finally:
+                self.api_request_queue.task_done()        
+            
+    async def fetch_with_retries(self, api_request: dict):
+        url = build_url(api_request)
+        attempt = 0
+        
+        while attempt <= self.max_retries:
+            Settings.request_count += 1
+            try:
+                async with self.session.get(url) as response:
+                    # print('세션 진입 완료', flush=True)
+                    if response.status == 200:
+                        return await response.json()
+                    else:
+                        # print('비정상 응답', flush=True)
+                        try:
+                            error_data = await response.json()
+                            await self.save_error_log(api_request, error_data, datetime.now(timezone.utc))
+                            error_code = error_data.get("error", {}).get("code")
+                        except Exception:
+                            error_code = None
+                        
+                        if error_code == "DNF001":
+                            # print('해당 캐릭터 없음')
+                            raise NotFoundCharacterError()
+                        else:
+                            response.raise_for_status()
+            except asyncio.TimeoutError as e:
+                attempt += 1
+                if attempt > self.max_retries:
+                    # print(f"요청 실패: {url} (재시도 {self.max_retries}회 초과)")
+                    await self.save_error_log(api_request, e.__class__.__name__, datetime.now(timezone.utc))
+                    raise e
+                else:
+                    # print(f"요청 실패: {url} (재시도 {attempt}/{self.max_retries}) - {e}")
+                    backoff_time = min(2 ** attempt, 30)
+                    await asyncio.sleep(backoff_time)
+
+    async def flush_queue(self):
+        while not self.api_request_queue.empty():
+            try:
+                _ = self.api_request_queue.get_nowait()
+                self.api_request_queue.task_done()
+            except asyncio.QueueEmpty:
+                break           
+
+    async def save_error_log(self, api_request, error_data, fetched_at):
+        error_doc = {
+            'api_request' : api_request,
+            'error_data' : error_data,
+            'fetched_at' : fetched_at
+        }
+        await self.error_collection.insert_one(error_doc)
+        # print('에러 케이스 저장 완료')
