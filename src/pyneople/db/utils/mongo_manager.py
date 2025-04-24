@@ -1,4 +1,3 @@
-import asyncpg
 from motor.motor_asyncio import AsyncIOMotorClient
 from pyneople.config.config import Settings
 

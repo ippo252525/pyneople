@@ -2,6 +2,10 @@ import asyncpg
 from pyneople.config.config import Settings
 
 class PSQLConnectionManager:
+    """
+    이 클래스는 PostgreSQL 데이터베이스와의 연결을 관리합니다.
+    단일 코루틴 에서 연결을 생성하고, 커넥션 풀을 사용하여 여러 요청을 처리합니다.
+    """
     _pool = None
 
     @classmethod

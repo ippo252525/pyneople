@@ -9,7 +9,6 @@ pytest_cache/
 # 개발용
 labo.py
 test.py
-apikey.py
 *.ipynb
 .env
 

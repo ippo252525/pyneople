@@ -1,6 +1,19 @@
-def process_fame_api_request(data : dict, api_request : dict) -> dict:
+from typing import Optional
+
+def process_fame_api_request(data : dict, api_request : dict) -> Optional[dict]:
     """
-    15. 캐릭터 명성 검색을 위해 다음 api_request_params를 생성하는 함수
+    캐릭터 명성 데이터를 기준으로 다음 API request parameters를 설정하는 함수
+
+    주어진 데이터가 200개 이상이면 마지막 명성 값을 기준으로 maxFame을 조정하고,
+    200개 미만이면 전체 명성 범위의 최소값보다 1 작은 값을 설정함.
+    maxFame이 0 이하인 경우 None 반환
+
+    Args:
+        data (dict): Neople Open API 응답 데이터.
+        api_request (dict): endpoint와 request parameters를 key로 가지는 dict
+
+    Returns:
+        Optional[dict]: 수정된 api_request dict 또는 None
     """
     if len(data['rows']) >= 200:
         # 200개는 제일 작은 값부터 다시 조회
@@ -18,17 +31,25 @@ def process_fame_api_request(data : dict, api_request : dict) -> dict:
     else:
         return api_request
 
-def process_timeline_api_request(data : dict, api_request : dict) -> dict: 
+def process_timeline_api_request(data : dict, api_request : dict) -> Optional[dict]: 
     """
-    04. 캐릭터 타임라인 조회를 위해 다음 api_request_params를 생성하는 함수
+    timeline 응답의 next 값을 기반으로 다음 API request parameters를 설정하는 함수
+
+    next 값이 존재하면 해당 값을 request parameter로 추가하고, 없으면 None 반환
+
+    Args:
+        data (dict): Neople Open API 응답 데이터. 'timeline' key와 그 안의 'next' 값을 포함함
+        api_request (dict): endpoint와 request parameters를 key로 가지는 dict
+
+    Returns:
+        Optional[dict]: 수정된 api_request dict 또는 None
     """
-    # print('호출')
     # next가 있는 경우 next를 추가하고 아니면 None반환
     if data['timeline']['next']:
         api_request['params']['next'] = data['timeline']['next']
         return api_request
     else:
-        return None    
+        return None
 
 
 NEXT_ENDPOINT = {
@@ -37,5 +58,16 @@ NEXT_ENDPOINT = {
 }
 
 def process_api_request(data : dict, api_request : dict) -> dict:
-    # print('ddddddddd')
+    """
+    현재 endpoint에 해당하는 후속 API request parameters를 설정하는 함수
+
+    endpoint에 매핑된 처리 함수를 호출해 다음 요청 정보를 생성함
+
+    Args:
+        data (dict): Neople Open API 응답 데이터
+        api_request (dict): 'endpoint'와 request parameters를 key로 가지는 dict
+
+    Returns:
+        dict: 수정된 api_request dict
+    """    
     return NEXT_ENDPOINT[api_request['endpoint']](data, api_request)

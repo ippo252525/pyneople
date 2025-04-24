@@ -1,4 +1,5 @@
 from typing import Dict, List, Tuple, Any
+# Insurt Only Staging Table 도입으로 현재는 사용하지 않는 코드 입니다.
 
 def build_upsert_query(
     table_name: str,

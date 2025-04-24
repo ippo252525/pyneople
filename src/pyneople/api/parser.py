@@ -9,6 +9,7 @@ KST = ZoneInfo('Asia/Seoul')
 UTC = ZoneInfo('UTC')
 
 def extract_character_info(data : dict):
+    print(data)
     data = data['data']
     return {key : data.get(key) for key in CHARACTER_INFO_KEYS}
 
@@ -22,12 +23,24 @@ def convert_selected_keys_to_snake_case(d: Dict[str, Any], target_keys: List[str
             result[to_snake_case(k)] = v
     return result
 
-def prepro_character_fame(data : dict, columns : list = ['characterId', 'serverId', 'characterName', 'level', 'jobName', 'jobGrowName', 'fame']):
+def __prepro_character_fame(batch : List [dict])  -> List:
+    def _prepro_character_fame(data : dict, columns : list = ['characterId', 'serverId', 'characterName', 'level', 'jobName', 'jobGrowName', 'fame']) -> List:  
+        fetched_at = data['fetched_at'].replace(tzinfo=ZoneInfo("UTC"))
+        data = data['rows']
+        data = [{**convert_selected_keys_to_snake_case(character_fame_dict, columns), 'fetched_at' : fetched_at} for character_fame_dict in data]
+        return data
+    flattened = []
+    for data in batch:
+        flattened.extend(_prepro_character_fame(data))    
+    return flattened
+
+
+def prepro_character_fame(data : dict, columns : list = ['characterId', 'serverId', 'characterName', 'level', 'jobName', 'jobGrowName', 'fame']) -> List:  
     fetched_at = data['fetched_at'].replace(tzinfo=ZoneInfo("UTC"))
     data = data['rows']
-    base_info_dict = {'fetched_at' : fetched_at}
-    data = [{**convert_selected_keys_to_snake_case(character_fame_dict, columns), **base_info_dict} for character_fame_dict in data]
+    data = [{**convert_selected_keys_to_snake_case(character_fame_dict, columns), 'fetched_at' : fetched_at} for character_fame_dict in data]
     return data
+
 
 def prepro_chcaracter_info(data : dict, columns = ['characterId', 'serverId', 'characterName', 'level', 'jobName', 'jobGrowName', 'fame', 'adventureName', 'guildName', 'fetched_at']):
     data = convert_selected_keys_to_snake_case(data, columns)

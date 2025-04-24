@@ -4,7 +4,16 @@ from pyneople.config.config import Settings
 async def get_split_filters(mongo_collection: AsyncIOMotorCollection, 
                             num_workers: int = Settings.DEFAULT_NUM_MONGO_ROUTERS):
         """
-        _id를 기준으로 num_workers개 범위 필터를 계산해서 반환
+        MongoDB _id를 기준으로 num_workers개 범위 필터를 계산해서 반환하는 비동기 함수
+        
+        MongoDB 단일 Collection에서 데이터를 가져오는 워커를 어려개 동시에 사용 할 때 사용
+
+        Args:
+            mongo_collection(AsyncIOMotorCollection): 비동기 MongoDB 드라이버 motor의 collection 객체
+            num_workers(int): 사용 할 워커의 개수
+
+        Returns:
+            list: _id기반 필터을 원소로 가지는 list
         """
         total_docs = await mongo_collection.estimated_document_count()
         split_points = []

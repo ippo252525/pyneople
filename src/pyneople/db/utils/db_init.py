@@ -2,8 +2,7 @@ from pyneople.db.utils.psql_manager import PSQLConnectionManager
 import asyncio
 
 querys = [
-    "TRUNCATE TABLE staging_characters;",
-    "TRUNCATE TABLE staging_character_timelines;",
+    "TRUNCATE TABLE staging_characters;"
 ]
 
 async def init_db(querys : list):
@@ -12,6 +11,10 @@ async def init_db(querys : list):
     async with psql_pool.acquire() as conn:
         async with conn.transaction():
             for query in querys:
-                await conn.execute(query)
+                try:
+                    await conn.execute(query)
+                except Exception as e:
+                    print(f"Error executing query: {query}")
+                    print(e)    
 
 asyncio.run(init_db(querys))
