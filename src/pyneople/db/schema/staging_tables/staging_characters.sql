@@ -1,5 +1,4 @@
-CREATE TABLE characters (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE staging_characters (
     character_id VARCHAR(64) NOT NULL,
     server_id VARCHAR(32) NOT NULL,
     character_name VARCHAR(32) NOT NULL,
@@ -9,8 +8,6 @@ CREATE TABLE characters (
     fame INTEGER NOT NULL,
     adventure_name VARCHAR(32),
     guild_name VARCHAR(64),
-    last_seen_at TIMESTAMP NOT NULL,
-    is_active BOOLEAN NOT NULL DEFAULT TRUE,
-
-    UNIQUE (character_id, server_id)
+    fetched_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE
 );

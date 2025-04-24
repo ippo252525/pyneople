@@ -7,11 +7,18 @@ import json
 import aiohttp
 import asyncio  
 import requests
-from .METADATA import JOBCLASS, SETTINGS, TOTAL_ID_2_SERVER_ID
+from pyneople.api.METADATA import JOBCLASS, SETTINGS, TOTAL_ID_2_SERVER_ID
 
 __all__ = ['change_settings', 'get_request', 'jobname_equalize', 'get_job_info', 'NeopleOpenAPIError', 'ServerMaintenanceError', 'value_flatten', 'attr_flatten']
 
 class NeopleOpenAPIError(Exception):
+    """
+    Error 핸들링을 위한 Class
+    """
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+
+class NotFoundCharacterError(Exception):
     """
     Error 핸들링을 위한 Class
     """

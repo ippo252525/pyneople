@@ -4,6 +4,9 @@ SETTINGS = {
     "request_time_sleep" : 0.0015
 }
 
+# 응답에 캐릭터 기본 정보를 포함하는 endpoints
+ENDPOINTS_WITH_CHARACTER_INFO = ['character_timeline']
+
 # 서버 ID 가 key NAME 이 value
 SERVER_ID_TO_NAME = {
     'anton': '안톤',
@@ -334,6 +337,8 @@ CHARACTER_INFORMATION_NAME = {
     'guild_name': 'guildName'
 }
 
+CHARACTER_INFO_KEYS = ['serverId', 'characterId', 'characterName', 'level', 'jobId', 'jobGrowId', 'jobName', 'jobGrowName', 'fame', 'adventureName', 'guildId', 'guildName', 'fetched_at']
+
 # Status 에서 선택 가능한 변수
 STATUS_NAME = {
     'total_id' : 'total_id',
@@ -468,3 +473,5 @@ PLATINUM_AVATAR_NAME = {
         'emblems' : 'emblems',
         'platinum_emblem' : 'emblems'
 }
+
+SEED_TYPES_REQUIRING_PSQL_POOL = ['character_timeline']

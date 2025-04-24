@@ -1,0 +1,2 @@
+recursive-include src/pyneople/db/schema *.sql
+recursive-include src/pyneople/db/query *.sql

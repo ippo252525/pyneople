@@ -1,6 +1,0 @@
-sphinx
-sphinx-rtd-theme
-myst_parser
-pymongo
-psycopg2
-pyneople
