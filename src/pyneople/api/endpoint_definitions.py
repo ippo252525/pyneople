@@ -1,4 +1,4 @@
-API_ENDPOINTS = {
+ENDPOINT_DEFINITIONS = {
     
     # 01. 서버 정보
     'server' : {

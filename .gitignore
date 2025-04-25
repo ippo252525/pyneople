@@ -11,6 +11,7 @@ labo.py
 test.py
 *.ipynb
 .env
+docker-compose.yml
 
 # 빌드 아티팩트
 build/
