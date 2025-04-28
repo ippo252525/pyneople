@@ -19,7 +19,7 @@ class BaseSeeder(ABC):
         psql_pool (asyncpg.Pool): PostgreSQL connection pool
         shutdown_event (asyncio.Event): 종료 이벤트 플래그
         seeder_batch_size (int): 한 번에 처리할 데이터 수
-        api_keys (list[str]): API key 리스트 (순환 구조)
+        api_keys (Optional[list]): API key 리스트 (순환 구조)
         name (Optional[str]): Seeder 이름
     """    
     def __init__(self, 
@@ -28,13 +28,13 @@ class BaseSeeder(ABC):
                  psql_pool: asyncpg.Pool, 
                  shutdown_event: asyncio.Event, 
                  seeder_batch_size: int = Settings.DEFAULT_SEEDER_BATCH_SIZE,
-                 api_keys: list[str] = Settings.API_KEYS,
+                 api_keys: Optional[list]  = None,
                  name : Optional[str] = None):
         self.end_point = end_point
         self.api_request_queue = api_request_queue
         self.shutdown_event = shutdown_event
         self.psql_pool = psql_pool
-        self.api_keys = cycle(api_keys)
+        self.api_keys = cycle(api_keys.copy() if api_keys is not None else Settings.API_KEYS.copy())
         self.seeder_batch_size = seeder_batch_size
         self.name = name or self.__class__.__name__
     

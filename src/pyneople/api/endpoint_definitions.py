@@ -37,7 +37,7 @@ ENDPOINT_DEFINITIONS = {
     },
 
     # 05. 캐릭터 능력치 정보 조회
-    'character_stats' : {
+    'character_status' : {
         'url' : 'https://api.neople.co.kr/df/servers/{serverId}/characters/{characterId}/status?apikey={apikey}',
         'default_params' : {}        
     },

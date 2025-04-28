@@ -1,6 +1,5 @@
 from pyneople.api.endpoint_definitions import ENDPOINT_DEFINITIONS
 
-
 def build_url(api_request : dict) -> str:
     """API_ENDPOINTS 정보를 기반으로 URL을 생성합니다.
     Args:
