@@ -1,6 +1,6 @@
 from typing import Optional
 
-def process_timeline_api_request(data : dict, api_request : dict) -> Optional[dict]: 
+def build_next_character_timeline_api_request(data : dict, api_request : dict) -> Optional[dict]: 
     """
     timeline 응답의 next 값을 기반으로 다음 API request parameters를 설정하는 함수
 

@@ -1,5 +1,5 @@
 from pyneople.api.seeders.base_seeder import BaseSeeder
-from pyneople.api.metadata import PARAMS_FOR_SEED_CHARACTER_FAME
+from pyneople.metadata.metadata_generated import PARAMS_FOR_SEED_CHARACTER_FAME
 
 import logging
 

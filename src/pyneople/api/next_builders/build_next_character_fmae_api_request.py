@@ -1,6 +1,6 @@
 from typing import Optional
 
-def process_fame_api_request(data : dict, api_request : dict) -> Optional[dict]:
+def build_next_character_fame_api_request(data : dict, api_request : dict) -> Optional[dict]:
     """
     캐릭터 명성 데이터를 기준으로 다음 API request parameters를 설정하는 함수
 

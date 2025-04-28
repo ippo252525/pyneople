@@ -1,33 +1,26 @@
-import re
-from functools import lru_cache
-
-@lru_cache(maxsize=1000)
-def to_snake_case(s: str) -> str:
-    return re.sub(r'(?<!^)(?=[A-Z])', '_', s).lower()
-
-def convert_selected_keys_to_snake_case(d: dict, target_keys: list) -> dict:
-    result = {}
-    for k, v in d.items():
-        if k in target_keys:
-            result[to_snake_case(k)] = v
-    return result
-
-def get_value(data: dict, path: tuple):
+def _get_nested_value(data, path):
     current = data
-    for step in path:
-        if isinstance(step, str):
-            current = current.get(step)
-        elif isinstance(step, tuple):
-            search_key, search_value = step
-            found = None
+    first_key = path[0]
+    current = current[first_key]  
+
+    for step in path[1:]:
+        if isinstance(step, tuple):
+            key, value = step
+            if not isinstance(current, list):
+                raise TypeError(f"Expected list at {step}, got {type(current)}")
             for item in current:
-                if isinstance(item, dict) and item.get(search_key) == search_value:
-                    found = item
+                if isinstance(item, dict) and item.get(key) == value:
+                    current = item
                     break
-            current = found
+            else:
+                raise ValueError(f"No matching item for {step}")
         else:
-            raise ValueError(f"Invalid path step: {step}")
+            if not isinstance(current, dict):
+                raise TypeError(f"Expected dict at {step}, got {type(current)}")
+            current = current.get(step)  
     return current
 
-def extract_values(data : dict, data_path_map : dict, keys: tuple) -> dict:
-    return {key: get_value(data, data_path_map[key]) for key in keys}
+def extract_values(data, columns, data_map):
+    return {name: _get_nested_value(data, data_map[name]) for name in columns}
+
+

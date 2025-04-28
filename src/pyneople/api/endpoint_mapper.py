@@ -1,4 +1,0 @@
-
-class EndpointMapper:
-    @classmethod
-

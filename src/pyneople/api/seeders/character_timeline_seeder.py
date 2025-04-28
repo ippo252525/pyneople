@@ -14,10 +14,10 @@ class CharacterTimelineSeeder(CharacterBaseSeeder):
     """    
     def _get_api_request(self, character_id, server_id, **kwargs):
         api_requests = []
-        start_date = kwargs.get('start_date', '2025-01-09 12:00')
-        end_date = kwargs.get('end_date', datetime.now().strftime("%Y-%m-%d %H:%M"))
-        code = kwargs.get('code', '')
-        limit = kwargs.get('limit', 100)
+        start_date = kwargs.get('timeline_start_date', '2025-01-09 12:00')
+        end_date = kwargs.get('timeline_end_date', datetime.now().strftime("%Y-%m-%d %H:%M"))
+        code = kwargs.get('timeline_code', '')
+        limit = kwargs.get('timeline_limit', 100)
         
         end_dt = datetime.strptime(end_date, '%Y-%m-%d %H:%M')
         start_dt = datetime.strptime(start_date, '%Y-%m-%d %H:%M')
