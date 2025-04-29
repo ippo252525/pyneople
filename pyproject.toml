@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyneople"
-version = "1.0.0"
+version = "1.0.4"
 description = "Neople Open API wrapper with MongoDB and PostgreSQL support for data pipelines"
 readme = "README.md"
 requires-python = ">=3.9"

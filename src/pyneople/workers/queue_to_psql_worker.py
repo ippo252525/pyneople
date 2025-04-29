@@ -1,4 +1,3 @@
-import time
 import asyncpg
 import asyncio
 from typing import Optional

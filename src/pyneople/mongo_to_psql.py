@@ -1,22 +1,22 @@
 import asyncio
 import asyncpg
 from typing import Optional
-from pyneople.workers.mongo_router import MongoRouter
+from motor.motor_asyncio import AsyncIOMotorClient
 from pyneople.config.config import Settings
-from pyneople.db.utils.mongo_manager import MongoConnectionManager
-from pyneople.db.utils.psql_manager import PSQLConnectionManager
-from pyneople.db.utils.get_mongo_endpoints import get_mongo_endpoints
-from pyneople.db.utils.get_mongo_split_filters import get_split_filters
-from pyneople.api.endpoint_mapping import ENDPOINT_TO_STAGING_TABLE_NAME, ENDPOINT_TO_PREPROCESS
-from pyneople.api.endpoints import API_ENDPOINTS
-from pyneople.api.METADATA import ENDPOINTS_WITH_CHARACTER_INFO
+from pyneople.workers.mongo_router import MongoRouter
 from pyneople.workers.queue_to_psql_worker import QueueToPSQLWorker
 from pyneople.workers.shutdwon_controller import ShutdownController
+from pyneople.utils.db_utils.get_mongo_endpoints import get_mongo_endpoints
+from pyneople.utils.db_utils.get_mongo_split_filters import get_split_filters
+
+# EndpointRegistry 등록을 위한 endpoint_class import
+import pyneople.api.registry.endpoint_class
+from pyneople.api.registry.endpoint_registry import EndpointRegistry
 
 import logging
 logger = logging.getLogger(__name__)
 
-async def mongo_to_psql(
+async def _mongo_to_psql(
     endpoints: Optional[list] = None,
     character_info_endpoints: Optional[list] = None,
     queue_size : int = Settings.DEFAULT_MONGO_TO_PSQL_QUEUE_SIZE,
@@ -47,8 +47,8 @@ async def mongo_to_psql(
     """    
     # 1. DB 연결
     # MongoDB
-    await MongoConnectionManager.init_collection()
-    mongo_collection = MongoConnectionManager.get_collection()
+    mongo_client = AsyncIOMotorClient(Settings.MONGO_URL)
+    mongo_collection = mongo_client[Settings.MONGO_DB_NAME][Settings.MONGO_COLLECTION_NAME]
     # PostgreSQL
     async with asyncpg.create_pool(
         user=Settings.POSTGRES_USER,
@@ -65,7 +65,7 @@ async def mongo_to_psql(
         # endpoints가 명시된 경우 사용 endpoint 유효성 검사
         if endpoints:
             for endpoint in endpoints:
-                if endpoint not in API_ENDPOINTS.keys():
+                if endpoint not in EndpointRegistry.get_registered_endpoints():
                     raise ValueError(f"Invalid endpoint: {endpoint} 는 지원하지 않는 endpoint 입니다")
 
         # endpoints 명시 안한 경우 직접 가져옴
@@ -78,7 +78,7 @@ async def mongo_to_psql(
         if character_info_endpoints:
             # character_info_endpoints에 명시된 endpoint가 캐릭터 정보를 추출할 수 있는 endpoint인지 확인
             for character_info_endpoint in character_info_endpoints:
-                if character_info_endpoint not in ENDPOINTS_WITH_CHARACTER_INFO:
+                if not EndpointRegistry.get_class(character_info_endpoint).has_character_info_data:
                     raise ValueError(f"Invalid endpoint: {character_info_endpoint} 는 캐릭터 정보 추출을 지원하지 않습니다")
             # 캐릭터 정보를 추출할 수 있는 endpoint가 명시된 경우 endpoints에 'character_info'를 추가    
             endpoints.add('character_info')
@@ -101,10 +101,11 @@ async def mongo_to_psql(
         # queue 하나 당 num_queue_to_psql_workers 개의 QueueToPSQLWorker를 생성합니다.
         queue_to_psql_workers = []
         for endpoint in endpoints:
+            endpoint_class = EndpointRegistry.get_class(endpoint)
             for i in range(num_queue_to_psql_workers):
                 queue = endpoint_queue_map[endpoint]
-                table_name = ENDPOINT_TO_STAGING_TABLE_NAME[endpoint]
-                preprocess = ENDPOINT_TO_PREPROCESS[endpoint]
+                table_name = endpoint_class.staging_table_name
+                preprocess = endpoint_class.preprocess
                 worker = QueueToPSQLWorker(
                     queue=queue,
                     psql_pool=psql_pool,
@@ -126,13 +127,45 @@ async def mongo_to_psql(
         asyncio.create_task(ShutdownController(list(endpoint_queue_map.values()), shutdown_event, all_tasks).run())
 
         # 7. 종료
-        await asyncio.gather(*router_tasks)
-        logger.info(f"MongoRouter {num_mongo_routers}개 실행 완료")
-
+        try:
+            await asyncio.gather(*router_tasks)
+        except asyncio.CancelledError:
+            pass    
+        logger.info(f"MongoRouter {num_mongo_routers}개 실행 완료")    
+        
         joins = [queue.join() for queue in endpoint_queue_map.values()]
-        await asyncio.gather(*joins)
+        try:
+            await asyncio.gather(*joins)
+        except asyncio.CancelledError:
+            pass    
         logger.info(f"endpoint queue join 완료")
         shutdown_event.set()       
         
-        await asyncio.gather(*queue_to_psql_worker_tasks, return_exceptions=True)
+        try:
+            await asyncio.gather(*queue_to_psql_worker_tasks, return_exceptions=True)
+        except asyncio.CancelledError:
+            pass
         logger.info(f"QueueToPSQLWorker {num_queue_to_psql_workers}개 실행 완료")        
+
+def mongo_to_psql(
+    endpoints: Optional[list] = None,
+    character_info_endpoints: Optional[list] = None,
+    queue_size: int = Settings.DEFAULT_MONGO_TO_PSQL_QUEUE_SIZE,
+    num_queue_to_psql_workers: int = Settings.DEFAULT_NUM_QUEUE_TO_PSQL_WORKERS,
+    mongo_router_batch_size: int = Settings.DEFAULT_MONGO_ROUTER_BATCH_SIZE,
+    queue_to_psql_batch_size: int = Settings.DEFAULT_QUEUE_TO_PSQL_BATCH_SIZE,
+    num_mongo_routers: int = Settings.DEFAULT_NUM_MONGO_ROUTERS,
+    mongo_to_psql_pool_max_size: int = Settings.DEFAULT_MONGO_TO_PSQL_POOL_MAX_SIZE
+):
+    asyncio.run(
+        _mongo_to_psql(
+            endpoints=endpoints,
+            character_info_endpoints=character_info_endpoints,
+            queue_size=queue_size,
+            num_queue_to_psql_workers=num_queue_to_psql_workers,
+            mongo_router_batch_size=mongo_router_batch_size,
+            queue_to_psql_batch_size=queue_to_psql_batch_size,
+            num_mongo_routers=num_mongo_routers,
+            mongo_to_psql_pool_max_size=mongo_to_psql_pool_max_size
+        )
+    )        

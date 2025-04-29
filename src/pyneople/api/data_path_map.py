@@ -40,3 +40,4 @@ CHARACTER_TIMELINE_DATA_PATH_MAP = {
     'timeline_date': 'date',
     'timeline_data': 'data'
 }
+CHARACTER_TIMELINE_DATA_PATH_MAP = standardize_data_map(CHARACTER_TIMELINE_DATA_PATH_MAP)

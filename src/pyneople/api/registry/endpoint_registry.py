@@ -30,6 +30,9 @@ class EndpointRegistry:
         except KeyError:
             raise ValueError(f"해당 클래스는 등록되어 있지 않습니다 '{endpoint_name}'")
 
+    @classmethod
+    def get_registered_endpoints(cls):
+        return list(cls._registry.keys())
 
 def register_endpoint(name: str):
     """클래스를 엔드포인트 레지스트리에 자동 등록하는 데코레이터입니다.
