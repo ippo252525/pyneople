@@ -1,19 +1,23 @@
 import asyncio
 import aiohttp
 import asyncpg
-from pyneople.workers.api_fetch_worker import APIFetchWorker
-from pyneople.workers.mongo_store_worker import MongoStoreWorker
 from motor.motor_asyncio import AsyncIOMotorClient
-from pyneople.api.seeder import SEEDERS
+
 from pyneople.config.config import Settings
+from pyneople.workers.api_fetch_worker import APIFetchWorker
 from pyneople.utils.monitoring import count_requests_per_second
+from pyneople.workers.mongo_store_worker import MongoStoreWorker
 from pyneople.workers.shutdwon_controller import ShutdownController
+
+# EndpointRegistry 등록을 위한 endpoint_class import
+import pyneople.api.registry.endpoint_class
+from pyneople.api.registry.endpoint_registry import EndpointRegistry
 
 import logging
 
 logger = logging.getLogger(__name__)
 
-async def api_to_mongo(endpoints : list[str],
+async def _api_to_mongo(endpoints : list[str],
                        
                check_rate_limit : bool = None,
                num_api_fetch_workers : int = Settings.DEFAULT_NUM_API_FETCH_WORKERS, 
@@ -45,29 +49,34 @@ async def api_to_mongo(endpoints : list[str],
     Returns:
         None
     """    
+    # Shutdown event 설정
     api_shutdown_event = asyncio.Event()
     mongo_shutdown_event = asyncio.Event()
+
+    # DB 연결
     mongo_client = AsyncIOMotorClient(Settings.MONGO_URL)
     mongo_collection = mongo_client[Settings.MONGO_DB_NAME][Settings.MONGO_COLLECTION_NAME]
     error_collection = mongo_client[Settings.MONGO_DB_NAME][Settings.MONGO_ERROR_COLLECTION_NAME]        
-    api_request_queue = asyncio.Queue(maxsize=api_request_queue_size)
-    data_queue = asyncio.Queue()    
     async with asyncpg.create_pool(
         user=Settings.POSTGRES_USER,
         password=Settings.POSTGRES_PASSWORD,
         database=Settings.POSTGRES_DB,
         host=Settings.POSTGRES_HOST,
         port=Settings.POSTGRES_PORT,
-        min_size=1,
+        min_size=len(endpoints),
         max_size=psql_pool_max_size,
     ) as psql_pool:
-    
+        
+        # Queue 선언
+        api_request_queue = asyncio.Queue(maxsize=api_request_queue_size)
+        data_queue = asyncio.Queue()
+        
         async with aiohttp.ClientSession() as session:
             
             # 여러 개의 워커 생성
             if check_rate_limit:
                 asyncio.create_task(count_requests_per_second(api_shutdown_event))
-            seeders = [SEEDERS.get(endpoint)(endpoint, api_request_queue, psql_pool, api_shutdown_event, seeder_batch_size, name = f'{endpoint}_Seeder') for endpoint in endpoints]
+            seeders = [EndpointRegistry.get_class(endpoint).seeder(endpoint, api_request_queue, psql_pool, api_shutdown_event, seeder_batch_size, name = f'{endpoint}_Seeder') for endpoint in endpoints]
             api_fetch_workers = [APIFetchWorker(api_request_queue, data_queue, session, api_shutdown_event, error_collection, name = f'APIFetchWorker_{i}') for i in range(num_api_fetch_workers)]
             mongo_store_workers = [MongoStoreWorker(data_queue, mongo_collection, mongo_shutdown_event, mongo_store_batch_size, name = f'MongoStoreWorker_{i}') for i in range(num_mongo_store_workers)]
 
@@ -120,3 +129,28 @@ async def api_to_mongo(endpoints : list[str],
             await asyncio.gather(*shutdown_controller_tasks)
             logger.info("shutdown_controller_tasks 완료")
             logger.info("api_to_mongo 완료")
+
+def api_to_mongo(
+    endpoints: list[str],
+    check_rate_limit: bool = None,
+    num_api_fetch_workers: int = Settings.DEFAULT_NUM_API_FETCH_WORKERS,
+    num_mongo_store_workers: int = Settings.DEFAULT_NUM_MONGO_STORE_WORKERS,
+    api_request_queue_size: int = Settings.DEFAULT_API_REQUEST_QUEUE_SIZE,
+    mongo_store_batch_size: int = Settings.DEFAULT_MONGO_STORE_BATCH_SIZE,
+    seeder_batch_size: int = Settings.DEFAULT_SEEDER_BATCH_SIZE,
+    psql_pool_max_size: int = Settings.DEFAULT_SEEDER_PSQL_POOL_MAX_SIZE,
+    **seed_kwargs
+):
+    asyncio.run(
+        _api_to_mongo(
+            endpoints=endpoints,
+            check_rate_limit=check_rate_limit,
+            num_api_fetch_workers=num_api_fetch_workers,
+            num_mongo_store_workers=num_mongo_store_workers,
+            api_request_queue_size=api_request_queue_size,
+            mongo_store_batch_size=mongo_store_batch_size,
+            seeder_batch_size=seeder_batch_size,
+            psql_pool_max_size=psql_pool_max_size,
+            **seed_kwargs
+        )
+    )           

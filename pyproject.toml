@@ -4,7 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyneople"
-version = "1.0.3"
+<<<<<<< HEAD
+version = "1.0.4"
+=======
+version = "1.0.4"
+>>>>>>> origin/main
 description = "Neople Open API wrapper with MongoDB and PostgreSQL support for data pipelines"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -23,7 +27,9 @@ dependencies = [
   "motor>=3.7.0,<4.0.0",
   "asyncpg>=0.30.0,<1.0.0",
   "aiohttp>=3.11.14,<4.0.0",
-  "python-dotenv>=1.1.0,<2.0.0"
+  "python-dotenv>=1.1.0,<2.0.0",
+  "psycopg2-binary>=2.9.10,<3.0.0",
+  "requests>=2.32.3,<3.0.0"
 ]
 
 [project.urls]

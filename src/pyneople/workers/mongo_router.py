@@ -1,5 +1,5 @@
 from motor.motor_asyncio import AsyncIOMotorCollection
-from pyneople.api.parser import extract_character_info
+from pyneople.utils.api_utils.extract_character_info_data import extract_character_info_data
 from pyneople.config.config import Settings
             
 class MongoRouter:
@@ -30,7 +30,7 @@ class MongoRouter:
                 if endpoint in self.character_info_endpoints:
                     target_queue = self.queue_map.get('character_info')
                     if target_queue:
-                        await target_queue.put(extract_character_info(document))            
+                        await target_queue.put(extract_character_info_data(document))
 
             
                 

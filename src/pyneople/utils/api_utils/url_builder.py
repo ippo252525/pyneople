@@ -1,5 +1,4 @@
-from pyneople.api.endpoints import API_ENDPOINTS
-
+from pyneople.api.endpoint_definitions import ENDPOINT_DEFINITIONS
 
 def build_url(api_request : dict) -> str:
     """API_ENDPOINTS 정보를 기반으로 URL을 생성합니다.
@@ -10,7 +9,7 @@ def build_url(api_request : dict) -> str:
     Raises:
         ValueError: 잘못된 API 요청 정보가 제공된 경우.
     """
-    template = API_ENDPOINTS.get(api_request['endpoint'])
+    template = ENDPOINT_DEFINITIONS.get(api_request['endpoint'])
     if not template:
         raise ValueError(f"Unknown endpoint: {api_request['endpoint']}")
     

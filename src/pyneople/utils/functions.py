@@ -7,7 +7,7 @@ import json
 import aiohttp
 import asyncio  
 import requests
-from pyneople.api.METADATA import JOBCLASS, SETTINGS, TOTAL_ID_2_SERVER_ID
+from pyneople.api.metadata import JOBCLASS, SETTINGS, TOTAL_ID_2_SERVER_ID
 
 __all__ = ['change_settings', 'get_request', 'jobname_equalize', 'get_job_info', 'NeopleOpenAPIError', 'ServerMaintenanceError', 'value_flatten', 'attr_flatten']
 
