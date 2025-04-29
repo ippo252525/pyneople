@@ -4,7 +4,7 @@ from typing import Optional
 from itertools import cycle
 from datetime import datetime, timedelta
 from pyneople.config.config import Settings
-from pyneople.api.METADATA import PARAMS_FOR_SEED_CHARACTER_FAME
+from pyneople.api.metadata import PARAMS_FOR_SEED_CHARACTER_FAME
 from abc import ABC, abstractmethod
 
 import logging
