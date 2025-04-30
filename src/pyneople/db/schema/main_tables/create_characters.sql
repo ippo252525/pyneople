@@ -11,6 +11,5 @@ CREATE TABLE characters (
     guild_name VARCHAR(64),
     fetched_at TIMESTAMP WITH TIME ZONE NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
-
     UNIQUE (character_id, server_id)
 );

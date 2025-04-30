@@ -7,4 +7,5 @@ columns = TABLE_COLUMNS_MAP[CharacterInfo.staging_table_name]
 
 def extract_character_info_data(data : dict):
     data = data['data']
-    return extract_values(data, columns, CHARACTER_INFO_DATA_PATH_MAP)
+    character_info_keys = [key[0] for key in CHARACTER_INFO_DATA_PATH_MAP.values()]
+    return {key : data[key] for key in character_info_keys}

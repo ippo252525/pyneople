@@ -23,7 +23,7 @@ class BaseEndpoint(ABC):
     
     @staticmethod
     @abstractmethod
-    def preprocess(data):
+    def preprocess(data, columns):
         pass
     
     @staticmethod
@@ -41,8 +41,8 @@ class CharacterFame(BaseEndpoint):
     has_character_info_data = False
 
     @staticmethod
-    def preprocess(data):
-        return preprocess_character_fame(data)
+    def preprocess(data, columns):
+        return preprocess_character_fame(data, columns)
 
     @staticmethod
     def build_next_api_request(data: dict, api_request : dict):
@@ -55,8 +55,8 @@ class CharacterInfo(BaseEndpoint):
     has_character_info_data = False
     
     @staticmethod
-    def preprocess(data):
-        return preprocess_character_info(data)
+    def preprocess(data, columns):
+        return preprocess_character_info(data, columns)
 
     
 @register_endpoint('character_timeline')
@@ -65,8 +65,8 @@ class CharacterTimeline(BaseEndpoint):
     seeder = CharacterTimelineSeeder
 
     @staticmethod
-    def preprocess(data):
-        return preprocess_character_timeline(data)
+    def preprocess(data, columns):
+        return preprocess_character_timeline(data, columns)
 
     @staticmethod
     def build_next_api_request(data: dict, api_request: dict):
