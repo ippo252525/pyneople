@@ -21,6 +21,6 @@ def _get_nested_value(data, path):
     return current
 
 def extract_values(data, columns, data_map):
-    return {name: _get_nested_value(data, data_map[name]) for name in columns}
+    return {name: _get_nested_value(data, data_map[name]) for name in columns if data_map.get(name)}
 
 

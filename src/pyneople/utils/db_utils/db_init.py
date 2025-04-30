@@ -1,8 +1,8 @@
-from pyneople.db.utils.psql_manager import PSQLConnectionManager
+from pyneople.utils.db_utils.psql_manager import PSQLConnectionManager
 import asyncio
 
 querys = [
-    "TRUNCATE TABLE staging_characters;"
+'TRUNCATE TABLE staging_character_timelines, staging_characters, character_timelines, characters;'
 ]
 
 async def init_db(querys : list):

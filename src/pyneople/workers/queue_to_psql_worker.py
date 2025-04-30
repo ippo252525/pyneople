@@ -3,6 +3,7 @@ import asyncio
 from typing import Optional
 from pyneople.config.config import Settings
 from pyneople.utils.decorators import log_execution_time
+from pyneople.metadata.metadata_generated import TABLE_COLUMNS_MAP
 
 import logging
 logger = logging.getLogger(__name__)
@@ -102,7 +103,7 @@ class QueueToPSQLWorker:
             finally:        
                 if data is not None:
                     self.num_unfinished_task += 1
-            data = self.preprocess(data)
+            data = self.preprocess(data, TABLE_COLUMNS_MAP[self.table_name])
             if isinstance(data, list):
                 self.batch.extend(data)
             else:
