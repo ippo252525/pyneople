@@ -49,6 +49,7 @@ async def _mongo_to_psql(
     # MongoDB
     mongo_client = AsyncIOMotorClient(Settings.MONGO_URL)
     mongo_collection = mongo_client[Settings.MONGO_DB_NAME][Settings.MONGO_COLLECTION_NAME]
+    mongo_error_collection = mongo_client[Settings.MONGO_DB_NAME][Settings.MONGO_ERROR_COLLECTION_NAME]
     # PostgreSQL
     async with asyncpg.create_pool(
         user=Settings.POSTGRES_USER,
@@ -114,6 +115,7 @@ async def _mongo_to_psql(
                     preprocess=preprocess,
                     batch_size=queue_to_psql_batch_size,
                     shutdown_event=shutdown_event,
+                    error_collection=mongo_error_collection,
                     name = f'QueueToPSQLWorker_{endpoint}_{i}'
                 )
                 queue_to_psql_workers.append(worker)

@@ -72,7 +72,7 @@ class Settings:
     DEFAULT_API_FETCH_WORKER_MAX_RETRIES = 3
     
     # Seeder 전용 PSQL 연결 풀 최대 크기
-    DEFAULT_SEEDER_PSQL_POOL_MAX_SIZE = 2
+    DEFAULT_SEEDER_PSQL_POOL_MAX_SIZE = 10
 
     # Mongo → PSQL 작업용 연결 풀 최대 크기
     DEFAULT_MONGO_TO_PSQL_POOL_MAX_SIZE = 20

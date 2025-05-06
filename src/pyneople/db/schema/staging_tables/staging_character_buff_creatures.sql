@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "staging_characters" (
+CREATE TABLE IF NOT EXISTS "staging_character_buff_creatures" (
   "server_id" TEXT,
   "character_id" CHAR(32),
   "character_name" TEXT,
@@ -11,5 +11,10 @@ CREATE TABLE IF NOT EXISTS "staging_characters" (
   "adventure_name" TEXT,
   "guild_id" CHAR(32),
   "guild_name" TEXT,
+  "skill_info" TEXT,
+  "buff_creature_item_id" CHAR(32),
+  "buff_creature_item_name" TEXT,
+  "buff_creature_item_rarity" TEXT,
+  "buff_creature_enchant" TEXT,
   "fetched_at" TIMESTAMP WITH TIME ZONE
 );
