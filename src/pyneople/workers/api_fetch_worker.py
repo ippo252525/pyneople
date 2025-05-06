@@ -5,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorCollection
 from pyneople.utils.api_utils.url_builder import build_url
 from pyneople.api.registry.endpoint_registry import EndpointRegistry
 from pyneople.config.config import Settings
-from pyneople.utils.functions import NotFoundCharacterError
+from pyneople.utils.common import NotFoundCharacterError
 import logging
 
 logger = logging.getLogger(__name__)

@@ -2,8 +2,10 @@ import asyncpg
 import asyncio
 from typing import Optional
 from pyneople.config.config import Settings
+from motor.motor_asyncio import AsyncIOMotorCollection
 from pyneople.utils.decorators import log_execution_time
 from pyneople.metadata.metadata_generated import TABLE_COLUMNS_MAP
+import traceback
 
 import logging
 logger = logging.getLogger(__name__)
@@ -33,6 +35,7 @@ class QueueToPSQLWorker:
                  preprocess : callable, 
                  batch_size : int,
                  shutdown_event : asyncio.Event, 
+                 error_collection : AsyncIOMotorCollection,
                  timeout : float = Settings.DEFAULT_QUEUE_TO_PSQL_WORKER_TIMEOUT,
                  name : Optional[str]  = None):
         self.queue = queue
@@ -43,6 +46,7 @@ class QueueToPSQLWorker:
         self.batch_size = batch_size
         self.shutdown_event = shutdown_event
         self.timeout = timeout  
+        self.error_collection = error_collection
         self.name = name or self.__class__.__name__
         self.batch = []
         self.num_unfinished_task = 0
@@ -68,7 +72,8 @@ class QueueToPSQLWorker:
                 logger.info(f'{self.name} : CancelledError 발생, unfinished_task : {self.num_unfinished_task}')
                 raise
             except Exception as e:
-                logger.error(f"{self.name} : 오류 발생 - {e}")
+                logger.error(f"{self.name} : 오류 발생")
+                # logger.error(f"{self.name} : 오류 발생\n{e}")
                 self.shutdown_event.set()
                 break
             finally:
@@ -129,7 +134,8 @@ class QueueToPSQLWorker:
                         columns=self.batch[0].keys(),
                     )
         except Exception as e:
-            logger.error(f"{self.name} : copy 중 오류 발생 - {e}")
-            for doc in self.batch:
-                logger.debug(f"Failed document: {doc}")
-            raise e
+            self.error_collection.insert_one({'error' : str(e), 'batch' : self.batch})
+            logger.error(f"{self.name} : copy 중 오류 발생")
+            # for doc in self.batch:
+                # logger.debug(f"Failed document: {doc}")
+            # raise e
